@@ -10,6 +10,7 @@
 #   --gpu-headless  placa de vídeo virtio-gpu + teclado/mouse USB sem janela
 #                   (testes do desktop: a tela é lida pelo monitor do QEMU)
 #   --monitor       monitor HMP num socket unix (screendump, sendkey)
+#   --qga           canal do qemu-guest-agent num socket unix (scripts/test/qga.py)
 #
 # Por padrão cria (uma única vez) um disco persistente out/vm/<nome>.qcow2
 # copiado da imagem; a imagem de release nunca é modificada e um disco
@@ -18,7 +19,7 @@ source "$(dirname "$0")/../lib/common.sh"
 need qemu-system-aarch64; need qemu-img
 
 IMG=${1:?imagem}; shift
-DISK=""; HEADLESS=0; GPUHL=0; MONSOCK=""; SELFTEST=""; SERIAL_LOG=""; MEM=4096; CPUS=4
+DISK=""; HEADLESS=0; GPUHL=0; MONSOCK=""; QGASOCK=""; SELFTEST=""; SERIAL_LOG=""; MEM=4096; CPUS=4
 while [[ $# -gt 0 ]]; do
   case $1 in
     --disk) DISK=$2; shift ;;
@@ -29,6 +30,7 @@ while [[ $# -gt 0 ]]; do
     --cpus) CPUS=$2; shift ;;
     --gpu-headless) GPUHL=1 ;;
     --monitor) MONSOCK=$2; shift ;;
+    --qga) QGASOCK=$2; shift ;;
     *) die "opção desconhecida: $1" ;;
   esac; shift
 done
@@ -78,6 +80,8 @@ else
   args+=(-device virtio-gpu-pci -device qemu-xhci -device usb-kbd -device usb-tablet -display cocoa -serial stdio)
 fi
 [[ -n $MONSOCK ]] && args+=(-monitor "unix:$MONSOCK,server,nowait")
+[[ -n $QGASOCK ]] && args+=(-chardev "socket,path=$QGASOCK,server=on,wait=off,id=qga0" -device virtio-serial-pci
+                             -device "virtserialport,chardev=qga0,name=org.qemu.guest_agent.0")
 [[ -n $SELFTEST ]] && args+=(-fw_cfg "name=opt/osmarcio/selftest,string=$SELFTEST")
 
 log "QEMU: $(basename "$DISK") accel=${ACCEL[1]} mem=${MEM}M cpus=$CPUS"

@@ -5,8 +5,8 @@ LTS**, com aplicativos próprios em **Rust**. Projeto educacional e
 incremental, independente do antigo OSMarcio (kernel em Rust), que fica
 intocado em outro diretório.
 
-> **Estado (0.2.0, em desenvolvimento):** a imagem **Desktop ARM64**
-> (`images/utm/OSMarcioLinux-UTM-AArch64-Desktop-v0.2.0.img`) inicializa por
+> **Estado (0.2.1, em desenvolvimento):** a imagem **Desktop ARM64**
+> (`images/utm/OSMarcioLinux-UTM-AArch64-Desktop-v0.2.1.img`) inicializa por
 > UEFI até o login gráfico **LightDM → XFCE**, com **OSMarcio Terminal** e
 > **OSMarcio Browser** (Rust + CEF) — testada no QEMU/HVF (`make test-desktop`).
 > A `.img` é um **disco**, não uma ISO: no UTM ela deve ser importada como
@@ -64,6 +64,7 @@ make terminal-deb
 | Como o sistema inicializa | [docs/boot/Boot_Flow.md](docs/boot/Boot_Flow.md) |
 | Rede | [docs/networking/Diagnostico_Rede.md](docs/networking/Diagnostico_Rede.md) |
 | Terminal | [docs/terminal/OSMarcio_Terminal.md](docs/terminal/OSMarcio_Terminal.md) |
+| Browser | [docs/browser/OSMarcioBrowser_Architecture.md](docs/browser/OSMarcioBrowser_Architecture.md) · [hotfix 0.2.1](reports/OSMarcioBrowser_Fix_Report.md) |
 | Testes | [docs/testing/Test_Strategy.md](docs/testing/Test_Strategy.md) |
 | Roadmap | [docs/roadmap/Roadmap.md](docs/roadmap/Roadmap.md) |
 | Relatórios | [reports/](reports/) |

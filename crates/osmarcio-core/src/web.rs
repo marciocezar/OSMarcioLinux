@@ -36,7 +36,9 @@ pub fn url_encode(s: &str) -> String {
     let mut out = String::new();
     for b in s.bytes() {
         match b {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => out.push(b as char),
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                out.push(b as char)
+            }
             b' ' => out.push('+'),
             _ => out.push_str(&format!("%{b:02X}")),
         }
@@ -47,7 +49,11 @@ pub fn url_encode(s: &str) -> String {
 fn looks_like_host(s: &str) -> bool {
     let host = s.split(['/', '?', '#']).next().unwrap_or("");
     let host_no_port = host.rsplit_once(':').map_or(host, |(h, p)| {
-        if p.chars().all(|c| c.is_ascii_digit()) && !p.is_empty() { h } else { host }
+        if p.chars().all(|c| c.is_ascii_digit()) && !p.is_empty() {
+            h
+        } else {
+            host
+        }
     });
     if host_no_port.eq_ignore_ascii_case("localhost") {
         return true;
@@ -56,7 +62,9 @@ fn looks_like_host(s: &str) -> bool {
         && host_no_port.contains('.')
         && !host_no_port.starts_with('.')
         && !host_no_port.ends_with('.')
-        && host_no_port.chars().all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-')
+        && host_no_port
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-')
 }
 
 /// Interpreta o texto da barra de endereços.
@@ -77,7 +85,9 @@ pub fn parse_input(input: &str) -> Target {
         && scheme.chars().all(|c| c.is_ascii_alphabetic())
         && !looks_like_host(t)
     {
-        return Target::Rejected(format!("esquema \"{scheme}:\" não é aceito na barra de endereços"));
+        return Target::Rejected(format!(
+            "esquema \"{scheme}:\" não é aceito na barra de endereços"
+        ));
     }
     if !t.contains(char::is_whitespace) && looks_like_host(t) {
         return Target::Url(format!("https://{t}"));
@@ -137,7 +147,11 @@ pub fn home_page(version: &str, bookmarks: &[Entry], history: &[Entry]) -> Strin
             .iter()
             .map(|e| {
                 let title = if e.title.is_empty() { &e.url } else { &e.title };
-                format!("<li><a href=\"{}\">{}</a></li>", html_escape(&e.url), html_escape(title))
+                format!(
+                    "<li><a href=\"{}\">{}</a></li>",
+                    html_escape(&e.url),
+                    html_escape(title)
+                )
             })
             .collect();
         format!("<ul>{li}</ul>")
@@ -160,9 +174,15 @@ F5 recarregar · Alt+←/→ voltar/avançar · Ctrl+=/−/0 zoom · F11 tela ch
 /// Página de erro de navegação (DNS, certificado, conexão…).
 pub fn error_page(url: &str, code: i32, text: &str) -> String {
     let hint = match text {
-        t if t.contains("NAME_NOT_RESOLVED") => "O nome do site não foi encontrado (DNS). Verifique o endereço e a conexão: <code>resolvectl query &lt;site&gt;</code>.",
-        t if t.contains("CERT") => "O certificado do site é inválido ou não confiável. Por segurança, a página <b>não</b> foi carregada e não há opção de ignorar o erro.",
-        t if t.contains("INTERNET_DISCONNECTED") || t.contains("ADDRESS_UNREACHABLE") => "Sem conexão de rede. Veja <code>ip route</code> e <code>nmcli device status</code>.",
+        t if t.contains("NAME_NOT_RESOLVED") => {
+            "O nome do site não foi encontrado (DNS). Verifique o endereço e a conexão: <code>resolvectl query &lt;site&gt;</code>."
+        }
+        t if t.contains("CERT") => {
+            "O certificado do site é inválido ou não confiável. Por segurança, a página <b>não</b> foi carregada e não há opção de ignorar o erro."
+        }
+        t if t.contains("INTERNET_DISCONNECTED") || t.contains("ADDRESS_UNREACHABLE") => {
+            "Sem conexão de rede. Veja <code>ip route</code> e <code>nmcli device status</code>."
+        }
         t if t.contains("TIMED_OUT") => "O servidor demorou demais para responder.",
         _ => "A página não pôde ser carregada.",
     };
@@ -178,18 +198,31 @@ pub fn error_page(url: &str, code: i32, text: &str) -> String {
 
 /// Página interna como `data:` URL (base64), sem acesso a arquivos.
 pub fn data_url(html: &str) -> String {
-    format!("data:text/html;charset=utf-8;base64,{}", base64(html.as_bytes()))
+    format!(
+        "data:text/html;charset=utf-8;base64,{}",
+        base64(html.as_bytes())
+    )
 }
 
-fn base64(data: &[u8]) -> String {
+pub fn base64(data: &[u8]) -> String {
     const T: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::with_capacity(data.len().div_ceil(3) * 4);
     for c in data.chunks(3) {
-        let n = (c[0] as u32) << 16 | (*c.get(1).unwrap_or(&0) as u32) << 8 | *c.get(2).unwrap_or(&0) as u32;
+        let n = (c[0] as u32) << 16
+            | (*c.get(1).unwrap_or(&0) as u32) << 8
+            | *c.get(2).unwrap_or(&0) as u32;
         out.push(T[(n >> 18) as usize & 63] as char);
         out.push(T[(n >> 12) as usize & 63] as char);
-        out.push(if c.len() > 1 { T[(n >> 6) as usize & 63] as char } else { '=' });
-        out.push(if c.len() > 2 { T[n as usize & 63] as char } else { '=' });
+        out.push(if c.len() > 1 {
+            T[(n >> 6) as usize & 63] as char
+        } else {
+            '='
+        });
+        out.push(if c.len() > 2 {
+            T[n as usize & 63] as char
+        } else {
+            '='
+        });
     }
     out
 }
@@ -215,7 +248,9 @@ impl EntryFile {
 
     /// `$XDG_DATA_HOME/osmarcio/browser/<nome>.tsv`.
     pub fn in_data_dir(name: &str) -> Option<Self> {
-        let d = directories::BaseDirs::new()?.data_dir().join("osmarcio/browser");
+        let d = directories::BaseDirs::new()?
+            .data_dir()
+            .join("osmarcio/browser");
         Some(Self::new(d.join(format!("{name}.tsv"))))
     }
 
@@ -228,7 +263,10 @@ impl EntryFile {
             std::fs::create_dir_all(d)?;
         }
         let clean = |s: &str| s.replace(['\t', '\n', '\r'], " ");
-        let mut f = OpenOptions::new().create(true).append(true).open(&self.path)?;
+        let mut f = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&self.path)?;
         writeln!(f, "{}\t{}", clean(&e.url), clean(&e.title))
     }
 
@@ -240,7 +278,10 @@ impl EntryFile {
             .rev()
             .filter_map(|l| {
                 let (u, t) = l.split_once('\t').unwrap_or((l, ""));
-                (!u.is_empty() && seen.insert(u.to_string())).then(|| Entry { url: u.into(), title: t.into() })
+                (!u.is_empty() && seen.insert(u.to_string())).then(|| Entry {
+                    url: u.into(),
+                    title: t.into(),
+                })
             })
             .take(n)
             .collect()
@@ -260,18 +301,45 @@ mod tests {
 
     #[test]
     fn address_bar_rules() {
-        assert_eq!(parse_input("https://example.com"), Target::Url("https://example.com".into()));
-        assert_eq!(parse_input("  example.com/x?y=1 "), Target::Url("https://example.com/x?y=1".into()));
-        assert_eq!(parse_input("localhost:8080"), Target::Url("https://localhost:8080".into()));
-        assert_eq!(parse_input("debian.org"), Target::Url("https://debian.org".into()));
-        assert_eq!(parse_input("como instalar rust"), Target::Search("como instalar rust".into()));
+        assert_eq!(
+            parse_input("https://example.com"),
+            Target::Url("https://example.com".into())
+        );
+        assert_eq!(
+            parse_input("  example.com/x?y=1 "),
+            Target::Url("https://example.com/x?y=1".into())
+        );
+        assert_eq!(
+            parse_input("localhost:8080"),
+            Target::Url("https://localhost:8080".into())
+        );
+        assert_eq!(
+            parse_input("debian.org"),
+            Target::Url("https://debian.org".into())
+        );
+        assert_eq!(
+            parse_input("como instalar rust"),
+            Target::Search("como instalar rust".into())
+        );
         assert_eq!(parse_input("rust"), Target::Search("rust".into()));
         assert_eq!(parse_input("osmarcio://inicio"), Target::Home);
-        assert!(matches!(parse_input("javascript:alert(1)"), Target::Rejected(_)));
-        assert!(matches!(parse_input("file:///etc/shadow"), Target::Rejected(_)));
-        assert!(matches!(parse_input("chrome://settings"), Target::Rejected(_)));
+        assert!(matches!(
+            parse_input("javascript:alert(1)"),
+            Target::Rejected(_)
+        ));
+        assert!(matches!(
+            parse_input("file:///etc/shadow"),
+            Target::Rejected(_)
+        ));
+        assert!(matches!(
+            parse_input("chrome://settings"),
+            Target::Rejected(_)
+        ));
         assert!(matches!(parse_input(""), Target::Rejected(_)));
-        assert_eq!(parse_input("http://neverssl.com"), Target::Url("http://neverssl.com".into()));
+        assert_eq!(
+            parse_input("http://neverssl.com"),
+            Target::Url("http://neverssl.com".into())
+        );
     }
 
     #[test]
@@ -294,7 +362,14 @@ mod tests {
         let p = error_page("https://x/<script>", -105, "ERR_NAME_NOT_RESOLVED");
         assert!(p.contains("&lt;script&gt;") && !p.contains("<script>"));
         assert!(p.contains("DNS"));
-        let h = home_page("0.2.0", &[Entry { url: "https://a\"b".into(), title: "<b>".into() }], &[]);
+        let h = home_page(
+            "0.2.0",
+            &[Entry {
+                url: "https://a\"b".into(),
+                title: "<b>".into(),
+            }],
+            &[],
+        );
         assert!(h.contains("&quot;") && h.contains("&lt;b&gt;"));
     }
 
@@ -312,12 +387,26 @@ mod tests {
     fn entry_file_recent_dedup() {
         let d = tempfile::tempdir().unwrap();
         let f = EntryFile::new(d.path().join("x/h.tsv"));
-        for (u, t) in [("https://a", "A"), ("https://b", "B\tx"), ("https://a", "A2")] {
-            f.append(&Entry { url: u.into(), title: t.into() }).unwrap();
+        for (u, t) in [
+            ("https://a", "A"),
+            ("https://b", "B\tx"),
+            ("https://a", "A2"),
+        ] {
+            f.append(&Entry {
+                url: u.into(),
+                title: t.into(),
+            })
+            .unwrap();
         }
         let r = f.recent(10);
         assert_eq!(r.len(), 2);
-        assert_eq!(r[0], Entry { url: "https://a".into(), title: "A2".into() });
+        assert_eq!(
+            r[0],
+            Entry {
+                url: "https://a".into(),
+                title: "A2".into()
+            }
+        );
         assert_eq!(r[1].title, "B x");
         assert!(f.contains("https://b") && !f.contains("https://c"));
     }

@@ -8,5 +8,8 @@
   <property name="Gtk" type="empty">
     <property name="FontName" type="string" value="DejaVu Sans 10"/>
     <property name="MonospaceFontName" type="string" value="DejaVu Sans Mono 11"/>
+    <!-- ícones nos menus (o padrão do GTK 3 é desligado) -->
+    <property name="MenuImages" type="bool" value="true"/>
+    <property name="ButtonImages" type="bool" value="true"/>
   </property>
 </channel>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OSMarcio Browser — ícone original do projeto OSMarcio Linux (GPL-3.0-or-later).
+     Globo com meridianos (navegador) + órbita com seta (navegação), nas cores
+     da identidade OSMarcio. Não deriva de marcas de terceiros. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#24496e"/>
+      <stop offset="1" stop-color="#1d2b3a"/>
+    </linearGradient>
+    <radialGradient id="globe" cx="0.38" cy="0.32" r="0.8">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </radialGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="56" fill="url(#bg)"/>
+  <circle cx="122" cy="134" r="76" fill="url(#globe)"/>
+  <g fill="none" stroke="#e6fffb" stroke-width="10" stroke-linecap="round" opacity="0.92">
+    <ellipse cx="122" cy="134" rx="32" ry="76"/>
+    <path d="M48 134 H196"/>
+    <path d="M62 96 Q122 112 182 96"/>
+    <path d="M62 172 Q122 156 182 172"/>
+  </g>
+  <circle cx="122" cy="134" r="76" fill="none" stroke="#e6fffb" stroke-width="10"/>
+  <path d="M40 196 C 70 236, 196 214, 214 74" fill="none" stroke="#f59e0b" stroke-width="18" stroke-linecap="round"/>
+  <path d="M190 84 L 218 44 L 236 92 Z" fill="#f59e0b" stroke="#f59e0b" stroke-width="6" stroke-linejoin="round"/>
+</svg>

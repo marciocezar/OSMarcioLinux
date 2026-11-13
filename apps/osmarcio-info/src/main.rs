@@ -84,7 +84,10 @@ fn summary(i: &SystemInfo) {
     row("Display", display(i));
     row("CPU", cpu(i));
     row("Memory", mem(i));
-    row("Uptime", i.uptime.map(format_duration).unwrap_or_else(|| "—".into()));
+    row(
+        "Uptime",
+        i.uptime.map(format_duration).unwrap_or_else(|| "—".into()),
+    );
     row("Network", i.network_summary());
     row("Build", build(i));
 }
@@ -112,17 +115,37 @@ fn hardware(i: &SystemInfo) {
     row("Arquitetura", &i.arch);
     row("CPU", cpu(i));
     row("Memória", mem(i));
-    row("Uptime", i.uptime.map(format_duration).unwrap_or_else(|| "—".into()));
+    row(
+        "Uptime",
+        i.uptime.map(format_duration).unwrap_or_else(|| "—".into()),
+    );
 }
 
 fn network(i: &SystemInfo) {
     row("Estado", i.network_summary());
     for n in &i.interfaces {
-        let a = if n.ipv4.is_empty() { "sem IPv4".to_string() } else { n.ipv4.join(", ") };
+        let a = if n.ipv4.is_empty() {
+            "sem IPv4".to_string()
+        } else {
+            n.ipv4.join(", ")
+        };
         row(&format!("  {}", n.name), format!("{} — {a}", n.state));
     }
-    row("Gateway", i.gateway.as_ref().map(|(g, d)| format!("{g} ({d})")).unwrap_or_else(|| "—".into()));
-    row("DNS", if i.dns.is_empty() { "—".into() } else { i.dns.join(", ") });
+    row(
+        "Gateway",
+        i.gateway
+            .as_ref()
+            .map(|(g, d)| format!("{g} ({d})"))
+            .unwrap_or_else(|| "—".into()),
+    );
+    row(
+        "DNS",
+        if i.dns.is_empty() {
+            "—".into()
+        } else {
+            i.dns.join(", ")
+        },
+    );
 }
 
 fn desktop(i: &SystemInfo) {

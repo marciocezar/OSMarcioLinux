@@ -64,10 +64,15 @@ if [[ -e /usr/sbin/lightdm ]]; then
   check default-target   bash -c '[[ $(systemctl get-default) == graphical.target ]] && echo graphical.target'
   check display-manager  bash -c 'for i in $(seq 60); do systemctl is-active -q lightdm && pgrep -x Xorg >/dev/null && pgrep -f lightdm-gtk-greeter >/dev/null && { echo "lightdm + Xorg + greeter ativos"; exit 0; }; sleep 2; done; systemctl is-active lightdm; false'
   check xorg-driver      bash -c 'grep -m1 -E "modeset\(0\): (Output|Modeline|glamor)" /var/log/Xorg.0.log | cut -c1-110'
-  check app-terminal     bash -c 'f=$(command -v osmarcio-terminal) && file -L "$f" | grep -o "ARM aarch64" && ! ldd "$f" | grep "not found"'
+  # Arquitetura esperada dos binários = a da máquina (ARM aarch64 ou x86-64).
+  ELF=$(case $(uname -m) in aarch64) echo "ARM aarch64";; x86_64) echo "x86-64";; *) uname -m;; esac)
+  check app-terminal     bash -c 'f=$(command -v osmarcio-terminal) && file -L "$f" | grep -o "'"$ELF"'" && ! ldd "$f" | grep "not found"'
   check app-info         bash -c 'osmarcio-info --version | head -1'
-  check app-browser-arch bash -c 'file -L /opt/osmarcio/browser/osmarcio-browser /opt/osmarcio/browser/libcef.so | grep -c "ARM aarch64" | grep -qx 2 && echo "osmarcio-browser + libcef.so: ARM aarch64"'
-  check app-browser-libs bash -c 'm=$(ldd /opt/osmarcio/browser/libcef.so /opt/osmarcio/browser/osmarcio-browser | grep "not found"); [[ -z $m ]] && echo "nenhuma biblioteca ausente" || { echo $m; false; }'
+  check app-browser-pkg  bash -c 'dpkg-query -W -f="\${Package} \${Version} \${Architecture}" osmarcio-browser'
+  check app-browser-arch bash -c 'file -L /usr/lib/osmarcio-browser/osmarcio-browser /usr/lib/osmarcio-browser/libcef.so | grep -c "'"$ELF"'" | grep -qx 2 && echo "osmarcio-browser + libcef.so: '"$ELF"'"'
+  check app-browser-libs bash -c 'm=$(ldd /usr/lib/osmarcio-browser/libcef.so /usr/lib/osmarcio-browser/osmarcio-browser | grep "not found"); [[ -z $m ]] && echo "nenhuma biblioteca ausente" || { echo $m; false; }'
+  check app-browser-version bash -c 'runuser -u osmarcio -- osmarcio-browser --version | tr -s " " | paste -sd"|" | cut -c1-118'
+  check app-browser-icon bash -c 'ls /usr/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256}/apps/osmarcio-browser.png /usr/share/icons/hicolor/scalable/apps/osmarcio-browser.svg >/dev/null && grep -q "^Icon=osmarcio-browser$" /usr/share/applications/osmarcio-browser.desktop && echo "8 ícones + .desktop"'
   check userns-sandbox   bash -c 'v=$(cat /proc/sys/kernel/unprivileged_userns_clone 2>/dev/null || echo 1); [[ $v == 1 ]] && echo "user namespaces sem privilégio habilitados"'
 fi
 

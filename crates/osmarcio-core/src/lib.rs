@@ -7,6 +7,7 @@
 pub mod config;
 pub mod sysinfo;
 pub mod tabs;
+pub mod updates;
 pub mod web;
 
 /// Versão da distribuição/aplicativos (vem do Cargo.toml do workspace).

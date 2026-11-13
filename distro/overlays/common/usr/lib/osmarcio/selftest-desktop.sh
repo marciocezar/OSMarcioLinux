@@ -72,7 +72,7 @@ bw=$(asuser xdotool search --name 'OSMarcio Browser' 2>/dev/null | head -1)
 waitlog 'load_end status=200 url=https://example.com' 90 && pass "browser-https example.com status 200" \
   || fail "browser-https $(grep -E 'load_error|load_end' "$BLOG" | tail -1 | cut -c1-110)"
 ren=""
-for p in $(pgrep -u "$U" -f /opt/osmarcio/browser/osmarcio-browser); do
+for p in $(pgrep -u "$U" -f /usr/lib/osmarcio-browser/osmarcio-browser); do
   [[ $(awk '/^Seccomp:/{print $2}' /proc/$p/status) == 2 ]] && { ren=$p; break; }
 done
 if [[ -n $ren ]]; then
@@ -82,7 +82,7 @@ else
   fail "browser-sandbox nenhum subprocesso com seccomp"
 fi
 pgrep -u "$U" -f -- '--no-sandbox' >/dev/null && fail "browser-no-sandbox há processo com --no-sandbox" || pass "browser-no-sandbox nenhum processo com --no-sandbox"
-rss=0; for p in $(pgrep -u "$U" -f /opt/osmarcio/browser/osmarcio-browser); do r=$(awk '/^VmRSS:/{print $2}' /proc/$p/status 2>/dev/null); rss=$((rss + ${r:-0})); done
+rss=0; for p in $(pgrep -u "$U" -f /usr/lib/osmarcio-browser/osmarcio-browser); do r=$(awk '/^VmRSS:/{print $2}' /proc/$p/status 2>/dev/null); rss=$((rss + ${r:-0})); done
 out "INFO browser-rss-MiB=$((rss/1024)) mem-used-MiB=$(LC_ALL=C free -m | awk '/^Mem:/{print $3}')"
 
 # Capturas de tela pelo host: 1) browser em primeiro plano (o host mede os

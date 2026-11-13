@@ -34,7 +34,7 @@ DISK="$TDIR/disk.qcow2"
 qemu-img create -q -f qcow2 -F raw -b "$IMG_ABS" "$DISK" 20G
 
 log "boot (QEMU/HVF, virtio-gpu, 4 GiB, 4 CPUs) — serial em ${SER#$OSM_ROOT/}"
-"$OSM_ROOT/scripts/run/qemu-arm64.sh" "$IMG_ABS" --disk "$DISK" --gpu-headless --monitor "$MON" \
+"$OSM_ROOT/scripts/run/qemu-arm64.sh" "$IMG_ABS" --disk "$DISK" --gpu-headless --monitor "$MON" --qga "$TDIR/qga.sock" \
   --selftest "desktop$([[ ${OSM_KEEP_VM:-0} == 1 ]] || echo +poweroff)" --serial-log "$SER" --mem 4096 --cpus 4 >"$TDIR/qemu.out" 2>&1 &
 QPID=$!
 [[ ${OSM_KEEP_VM:-0} == 1 ]] || trap 'kill $QPID 2>/dev/null || true' EXIT

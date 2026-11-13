@@ -4,8 +4,13 @@ Name=OSMarcio Browser
 GenericName=Navegador Web
 Comment=Navegue na Internet (Rust + Chromium Embedded Framework)
 Exec=osmarcio-browser %U
-Icon=web-browser
+Icon=osmarcio-browser
 Terminal=false
 Categories=Network;WebBrowser;
 MimeType=text/html;x-scheme-handler/http;x-scheme-handler/https;
 StartupNotify=true
+Actions=about;
+
+[Desktop Action about]
+Name=Sobre o OSMarcio Browser
+Exec=osmarcio-browser --about

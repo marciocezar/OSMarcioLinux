@@ -1,0 +1,12 @@
+# OSMarcio Browser — canal de atualizações (conffile do pacote osmarcio-browser)
+#
+# O motor Chromium/CEF faz parte do pacote: uma "atualização do Chromium" é
+# sempre uma nova versão homologada do pacote osmarcio-browser.
+#
+# Instalação: SOMENTE por repositório APT assinado (sudo apt install
+# --only-upgrade osmarcio-browser). O navegador nunca baixa nem executa binários.
+#
+# manifest_url (opcional): manifesto TOML de releases homologadas, usado só para
+# INFORMAR o que existe. Aceita apenas https:// (certificado verificado) ou
+# file:/// (arquivo local do administrador). Vazio = não configurado.
+manifest_url = ""

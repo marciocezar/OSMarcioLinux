@@ -117,7 +117,14 @@ wrap_life_span_handler! {
         fn on_after_created(&self, browser: Option<&mut Browser>) {
             if let Some(b) = id(&browser) {
                 log::info!("osmb: browser criado id={b}");
+                crate::ui::on_browser_created(b);
             }
+        }
+
+        fn do_close(&self, browser: Option<&mut Browser>) -> i32 {
+            // Com BrowserView, o padrão (0) faz o CEF fechar a JANELA inteira.
+            // Fechar uma aba (Ctrl+W, botão ✕ da aba) não pode fechar a janela.
+            id(&browser).map(crate::ui::on_do_close).unwrap_or(0)
         }
 
         fn on_before_close(&self, browser: Option<&mut Browser>) {

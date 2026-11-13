@@ -1,0 +1,67 @@
+== diagnóstico
+PRETTY_NAME="OSMarcio Linux 0.2.1 (base Debian 13 trixie)"
+aarch64
+running
+active
+osmarcio-browser	0.2.1
+   1280x800      74.99*+
+/dev/vda2        20G  1,5G   18G   9% /
+== ImageMagick temporário (capturas de tela; removido no fim)
+imagemagick ok
+SHOT 01-greeter
+== login gráfico no LightDM (XTest) + troca obrigatória de senha
+PASS login sessão XFCE aberta
+== fase fechar
+PASS fechar-x-1-aba janela fechada, processo encerrado normalmente em 0s, 0 subprocessos
+PASS tres-abas abertas
+PASS fechar-altf4-3-abas janela fechada, processo encerrado normalmente em 0s, 0 subprocessos
+PASS carregando página em carregamento (servidor lento)
+PASS fechar-ctrlq-carregando janela fechada, processo encerrado normalmente em 1s, 0 subprocessos
+PASS download iniciado (download_start path=/home/osmarcio/Downloads/grande.bin)
+PASS fechar-x-download-ativo janela fechada, processo encerrado normalmente em 0s, 0 subprocessos
+PASS menu aberto pelo botão ☰
+PASS fechar-menu janela fechada, processo encerrado normalmente em 0s, 0 subprocessos
+PASS ctrl-w fechou só a aba (janela continua aberta)
+PASS fechar-ctrlw-ultima-aba janela fechada, processo encerrado normalmente em 0s, 0 subprocessos
+RESULTADO(fechar): 11 passaram, 0 falharam
+== fase sobre-abrir
+PASS reabrir navegador abriu e carregou de novo
+LIMITACAO wm-class ausente (WM_CLASS:  not found.)
+PASS icone-janela _NET_WM_ICON: Icon (16 x 16) Icon (128 x 128) 
+PASS sobre-abrir browser=0.2.1 chromium=156.0.8078.88 cef=156.0.26 cef_compilado=156.0.26+g8ea0c73+chromium-156.0.8078.88 cef_rs=156.4.0+156.0.26 arch=aarch64 sistema=OSMarcio Linux 0.2.1 runtime_confere=true
+PASS sobre-janela X11 29360144
+PASS sobre-chromium igual ao --version (156.0.8078.88)
+PASS sobre-runtime libcef.so carregado == versão compilada
+RESULTADO(sobre-abrir): 6 passaram, 0 falharam
+SHOT 02-sobre-e-barra-de-tarefas
+SHOT 03-alt-tab
+SHOT 04-menu-internet
+== fase sobre-verificar
+PASS sobre-verificar Fonte de atualização não configurada (nem repositório APT do OSMarcio Browser nem manifest_url em /etc/osmarcio/browser-updates.toml
+PASS sobre-verificar estado 'fonte não configurada' (padrão do pacote)
+PASS sobre-copiar texto copiado contém as versões (colado na barra de endereços)
+RESULTADO(sobre-verificar): 3 passaram, 0 falharam
+SHOT 05-sobre-verificar
+== fase sobre-fechar
+PASS sobre-fechar botão Fechar fechou só o Sobre; navegador segue aberto
+PASS fechar-x-com-sobre-aberto janela fechada, processo encerrado normalmente em 0s, 0 subprocessos
+RESULTADO(sobre-fechar): 2 passaram, 0 falharam
+== fase atualizacoes
+PASS atualizacao-fonte-ausente: Fonte de atualização não configurada (nem repositório APT do OSMarcio Browser nem manifest_url em /etc/osmarcio/browser-updates.toml).
+PASS atualizacao-ja-atualizado: O OSMarcio Browser está atualizado (0.2.1).
+PASS atualizacao-nova-homologada: Versão homologada 9.9.9 (Chromium 157.0.0.0) publicada, mas não há repositório APT assinado configurado para instalá-la com segurança.
+PASS atualizacao-nao-homologada: Existe a versão 9.9.9, ainda não homologada para o OSMarcio Linux — não oferecida.
+PASS atualizacao-incompativel: A versão 9.9.9 não tem pacote para esta arquitetura (arm64).
+PASS atualizacao-http-recusado: Não foi possível verificar atualizações: manifest_url recusada (use https:// ou file:///): http://deb.debian.org/m.toml
+PASS atualizacao-dns-falha: Não foi possível verificar atualizações: sem conexão (nome do servidor não resolvido)
+PASS atualizacao-tls-falha: Não foi possível verificar atualizações: falha TLS/certificado — a fonte não foi aceita
+PASS atualizacao-resposta-invalida: Não foi possível verificar atualizações: manifesto inválido: TOML parse error at line 1, column 11
+  |
+1 | <!doctype html><html lang=en><head><meta charset=utf-8><link rel=icon href=data:,><meta name=viewport content="width=device-width,initial-scale=1"><title>Example Domain</title><style>html{color-scheme:light dark;background:light-dark(#eee,#222)}body{font:16px/1.6 system-ui,sans-serif;max-width:26em;margin:auto;padding:25vh 2em 2em;text-align:center}</style></head><body><p>This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.</p><script src=/s.js></script></body></html>
+  |           ^
+key with no value, expected `=`
+PASS atualizacao-sem-internet: Não foi possível verificar atualizações: sem conexão com o servidor de atualizações
+Error: argument "8988sec" is wrong: "expires" value is invalid
+
+RESULTADO(atualizacoes): 10 passaram, 0 falharam
+DONE

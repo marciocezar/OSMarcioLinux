@@ -5,5 +5,5 @@ Type=X-XFCE-Helper
 X-XFCE-Category=WebBrowser
 X-XFCE-Commands=osmarcio-browser
 X-XFCE-CommandsWithParameter=osmarcio-browser "%s"
-Icon=web-browser
+Icon=osmarcio-browser
 Name=OSMarcio Browser

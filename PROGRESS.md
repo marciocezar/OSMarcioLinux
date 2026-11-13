@@ -1,4 +1,4 @@
-# PROGRESS — OSMarcio Linux 0.2.0
+# PROGRESS — OSMarcio Linux 0.2.1
 
 Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 **Parcial** · **Bloqueado** · **Planejado**. Atualizado em 2026-11-13.
@@ -14,7 +14,7 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 | 7 Terminal Rust | Implementado e testado (dentro do desktop OSMarcio, QEMU e UTM) |
 | 8 Editor | Planejado |
 | 9 File Manager | Planejado |
-| 10 Browser + CEF | Parcial (abre, HTTPS, sandbox, renderiza no desktop ARM64; 2 avisos clippy) |
+| 10 Browser + CEF | Parcial (ARM64 testado: fechamento, ícone, Sobre, verificação de atualizações; sem canal APT assinado; x86_64 não construído) |
 | 11 Software Center | Planejado |
 | 12 Aplicativos externos | Planejado |
 | 13 Settings | Planejado |
@@ -25,6 +25,14 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 | 18 Release | Planejado |
 
 ---
+
+## Hotfix 0.2.1 — OSMarcio Browser (2026-11-13)
+- **Implementado e testado (ARM64, QEMU/HVF, sessão XFCE real):** fechamento da janela (X, Alt+F4, Ctrl+Q, menu, Ctrl+W, com download/carregamento/Sobre abertos, sem órfãos); ícone original na janela/barra/Alt+Tab/menu/pacote; janela Sobre com versões reais; verificação de atualizações (10 cenários); pacote `.deb`.
+- **Parcial:** WM_CLASS não aplicado pelo CEF (ícone funciona via `_NET_WM_ICON`).
+- **Bloqueado:** instalação de atualização com autorização (não há repositório APT assinado).
+- **App UTM 4.7.5:** testado (33/33, `reports/tests/utm-app-browser-hotfix-20261113T1310Z.log`).
+- **Não testado:** x86_64 (CEF linux64 não baixado/compilado).
+- **Evidências:** `reports/OSMarcioBrowser_Fix_Report.md`, `reports/tests/browser-hotfix-arm64-*.md`.
 
 ## Correção 2026-11-13 — boot no UTM e desktop · Implementado e testado
 - **Problema:** a `.img` Minimal v0.2.0 foi anexada no UTM como "Boot ISO Image" (CD USB) + disco VirtIO vazio → UEFI caía no `Shell>`. A imagem também não tinha desktop.

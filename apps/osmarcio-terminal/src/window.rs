@@ -44,6 +44,8 @@ impl TermWindow {
             .scrollable(true)
             .show_border(false)
             .build();
+        notebook.add_css_class("osm-tabs");
+        install_tab_css();
 
         let header = gtk4::HeaderBar::new();
         let new_btn = gtk4::Button::from_icon_name("tab-new-symbolic");
@@ -150,15 +152,24 @@ impl TermWindow {
             .hscrollbar_policy(gtk4::PolicyType::Never)
             .build();
 
+        // Abas legíveis: no mínimo ~14 caracteres (≈140 px na fonte padrão),
+        // no máximo 28; títulos maiores terminam em "…" e aparecem inteiros
+        // no tooltip. Medidas em caracteres (não pixels) acompanham a fonte
+        // e a escala da tela; a faixa de abas rola quando não cabem.
         let label = gtk4::Label::builder()
             .label("Terminal")
-            .max_width_chars(24)
+            .width_chars(14)
+            .max_width_chars(28)
             .ellipsize(pango::EllipsizeMode::End)
+            .xalign(0.0)
+            .hexpand(true)
+            .tooltip_text("Terminal")
             .build();
         let close = gtk4::Button::from_icon_name("window-close-symbolic");
         close.add_css_class("flat");
         close.set_tooltip_text(Some("Fechar aba (Ctrl+W)"));
-        let tab_box = gtk4::Box::new(gtk4::Orientation::Horizontal, 6);
+        let tab_box = gtk4::Box::new(gtk4::Orientation::Horizontal, 8);
+        tab_box.add_css_class("osm-tab");
         tab_box.append(&label);
         tab_box.append(&close);
 
@@ -204,6 +215,7 @@ impl TermWindow {
                 && !title.is_empty()
             {
                 t.label.set_text(&title);
+                t.label.set_tooltip_text(Some(&title));
             }
         });
 
@@ -325,6 +337,7 @@ impl TermWindow {
                         .or_else(|| t.term.window_title().map(|s| s.to_string()))
                         .unwrap_or_else(|| "Terminal".into());
                     t.label.set_text(&shown);
+                    t.label.set_tooltip_text(Some(&shown));
                     *t.custom_title.borrow_mut() = name;
                 }
                 pop.popdown();
@@ -460,4 +473,26 @@ fn apply_palette(term: &vte4::Terminal, theme: &str) {
     let ansi: Vec<gdk::RGBA> = p.ansi.iter().map(|c| rgba(c)).collect();
     let refs: Vec<&gdk::RGBA> = ansi.iter().collect();
     term.set_colors(Some(&rgba(p.fg)), Some(&rgba(p.bg)), &refs);
+}
+
+/// Estilo das abas (aplicado uma vez por display): padding maior e área
+/// clicável confortável, sem mexer na fonte do conteúdo do shell.
+fn install_tab_css() {
+    thread_local!(static DONE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) });
+    if DONE.with(|d| d.replace(true)) {
+        return;
+    }
+    let css = gtk4::CssProvider::new();
+    css.load_from_string(
+        "notebook.osm-tabs > header > tabs > tab { padding: 5px 14px; min-height: 30px; }\n\
+         notebook.osm-tabs > header > tabs > tab:checked { font-weight: bold; }\n\
+         notebook.osm-tabs .osm-tab button { min-width: 22px; min-height: 22px; padding: 2px; }",
+    );
+    if let Some(display) = gtk4::gdk::Display::default() {
+        gtk4::style_context_add_provider_for_display(
+            &display,
+            &css,
+            gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION,
+        );
+    }
 }

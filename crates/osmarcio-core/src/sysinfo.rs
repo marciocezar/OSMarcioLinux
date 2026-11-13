@@ -146,7 +146,11 @@ pub fn parse_ip_addr_json(json: &str) -> Vec<NetIface> {
                         .nth(1)
                         .and_then(|p| p.split(|c: char| !c.is_ascii_digit()).next())
                         .unwrap_or("");
-                    ipv4.push(if plen.is_empty() { addr.to_string() } else { format!("{addr}/{plen}") });
+                    ipv4.push(if plen.is_empty() {
+                        addr.to_string()
+                    } else {
+                        format!("{addr}/{plen}")
+                    });
                 }
             }
             Some(NetIface { name, state, ipv4 })
@@ -155,8 +159,13 @@ pub fn parse_ip_addr_json(json: &str) -> Vec<NetIface> {
 }
 
 pub fn parse_default_gateway(route_json: &str) -> Option<(String, String)> {
-    let obj = route_json.split('{').find(|o| o.contains("\"dst\":\"default\""))?;
-    Some((json_str_field(obj, "gateway")?, json_str_field(obj, "dev").unwrap_or_default()))
+    let obj = route_json
+        .split('{')
+        .find(|o| o.contains("\"dst\":\"default\""))?;
+    Some((
+        json_str_field(obj, "gateway")?,
+        json_str_field(obj, "dev").unwrap_or_default(),
+    ))
 }
 
 /// Servidores DNS de um resolv.conf.
@@ -201,12 +210,16 @@ fn read(p: impl AsRef<Path>) -> Option<String> {
 }
 
 fn read_trim(p: impl AsRef<Path>) -> Option<String> {
-    read(p).map(|s| s.trim().to_string()).filter(|s| !s.is_empty())
+    read(p)
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
 }
 
 fn cmd(prog: &str, args: &[&str]) -> Option<String> {
     let out = Command::new(prog).args(args).output().ok()?;
-    out.status.success().then(|| String::from_utf8_lossy(&out.stdout).into_owned())
+    out.status
+        .success()
+        .then(|| String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
 /// Caminho do registro de build gravado na imagem.
@@ -222,9 +235,13 @@ impl SystemInfo {
             .map(|t| parse_cpuinfo(&t))
             .map(|(m, c)| (Some(m), Some(c)))
             .unwrap_or((None, None));
-        let (mt, ma) = read("/proc/meminfo").map(|t| parse_meminfo(&t)).unwrap_or((0, 0));
+        let (mt, ma) = read("/proc/meminfo")
+            .map(|t| parse_meminfo(&t))
+            .unwrap_or((0, 0));
         let base = read_trim("/etc/debian_version").map(|v| format!("Debian GNU/Linux {v}"));
-        let build_info = read(BUILD_INFO_PATH).map(|t| parse_os_release(&t)).unwrap_or_default();
+        let build_info = read(BUILD_INFO_PATH)
+            .map(|t| parse_os_release(&t))
+            .unwrap_or_default();
         let env = |k: &str| std::env::var(k).ok().filter(|s| !s.is_empty());
 
         SystemInfo {
@@ -237,7 +254,8 @@ impl SystemInfo {
             base,
             kernel_release: read_trim("/proc/sys/kernel/osrelease"),
             kernel_version: read_trim("/proc/sys/kernel/version"),
-            arch: read_trim("/proc/sys/kernel/arch").unwrap_or_else(|| std::env::consts::ARCH.to_string()),
+            arch: read_trim("/proc/sys/kernel/arch")
+                .unwrap_or_else(|| std::env::consts::ARCH.to_string()),
             hostname: read_trim("/proc/sys/kernel/hostname"),
             desktop: env("XDG_CURRENT_DESKTOP"),
             session_type: env("XDG_SESSION_TYPE"),
@@ -246,8 +264,11 @@ impl SystemInfo {
             mem_total_kib: (mt > 0).then_some(mt),
             mem_available_kib: (ma > 0).then_some(ma),
             uptime: read("/proc/uptime").and_then(|t| parse_uptime(&t)),
-            interfaces: cmd("ip", &["-j", "-4", "addr"]).map(|j| parse_ip_addr_json(&j)).unwrap_or_default(),
-            gateway: cmd("ip", &["-j", "route", "show", "default"]).and_then(|j| parse_default_gateway(&j)),
+            interfaces: cmd("ip", &["-j", "-4", "addr"])
+                .map(|j| parse_ip_addr_json(&j))
+                .unwrap_or_default(),
+            gateway: cmd("ip", &["-j", "route", "show", "default"])
+                .and_then(|j| parse_default_gateway(&j)),
             dns: read("/run/systemd/resolve/resolv.conf")
                 .or_else(|| read("/etc/resolv.conf"))
                 .map(|t| parse_resolv_conf(&t))
@@ -264,7 +285,9 @@ impl SystemInfo {
             .filter(|i| i.name != "lo" && !i.ipv4.is_empty())
             .collect();
         match (up.first(), &self.gateway) {
-            (Some(i), Some((gw, _))) => format!("conectada — {} {} via {}", i.name, i.ipv4.join(", "), gw),
+            (Some(i), Some((gw, _))) => {
+                format!("conectada — {} {} via {}", i.name, i.ipv4.join(", "), gw)
+            }
             (Some(i), None) => format!("sem rota padrão — {} {}", i.name, i.ipv4.join(", ")),
             (None, _) => "desconectada (nenhum IPv4 fora do loopback)".into(),
         }
@@ -310,9 +333,15 @@ BUILD_ID=20261113T120000Z
     fn meminfo_and_uptime() {
         let mi = "MemTotal:        2014312 kB\nMemFree:  100 kB\nMemAvailable:    1800000 kB\n";
         assert_eq!(parse_meminfo(mi), (2014312, 1800000));
-        assert_eq!(parse_uptime("3725.51 7000.00\n"), Some(Duration::from_secs_f64(3725.51)));
+        assert_eq!(
+            parse_uptime("3725.51 7000.00\n"),
+            Some(Duration::from_secs_f64(3725.51))
+        );
         assert_eq!(format_duration(Duration::from_secs(3725)), "1 h 2 min");
-        assert_eq!(format_duration(Duration::from_secs(90_000)), "1 d 1 h 0 min");
+        assert_eq!(
+            format_duration(Duration::from_secs(90_000)),
+            "1 d 1 h 0 min"
+        );
         assert_eq!(format_kib(2014312), "1,9 GiB");
         assert_eq!(format_kib(524288), "512 MiB");
     }
@@ -322,9 +351,19 @@ BUILD_ID=20261113T120000Z
         let addr = r#"[{"ifindex":1,"ifname":"lo","flags":["LOOPBACK","UP"],"mtu":65536,"operstate":"UNKNOWN","addr_info":[{"family":"inet","local":"127.0.0.1","prefixlen":8,"scope":"host"}]},{"ifindex":2,"ifname":"enp0s1","flags":["UP"],"operstate":"UP","addr_info":[{"family":"inet","local":"10.0.2.15","prefixlen":24,"scope":"global","dynamic":true}]}]"#;
         let v = parse_ip_addr_json(addr);
         assert_eq!(v.len(), 2);
-        assert_eq!(v[1], NetIface { name: "enp0s1".into(), state: "UP".into(), ipv4: vec!["10.0.2.15/24".into()] });
+        assert_eq!(
+            v[1],
+            NetIface {
+                name: "enp0s1".into(),
+                state: "UP".into(),
+                ipv4: vec!["10.0.2.15/24".into()]
+            }
+        );
         let route = r#"[{"dst":"default","gateway":"10.0.2.2","dev":"enp0s1","protocol":"dhcp","flags":[]}]"#;
-        assert_eq!(parse_default_gateway(route), Some(("10.0.2.2".into(), "enp0s1".into())));
+        assert_eq!(
+            parse_default_gateway(route),
+            Some(("10.0.2.2".into(), "enp0s1".into()))
+        );
         assert_eq!(parse_default_gateway("[]"), None);
     }
 
@@ -332,14 +371,24 @@ BUILD_ID=20261113T120000Z
     fn network_summary_states() {
         let mut s = SystemInfo::default();
         assert!(s.network_summary().starts_with("desconectada"));
-        s.interfaces = vec![NetIface { name: "enp0s1".into(), state: "UP".into(), ipv4: vec!["10.0.2.15/24".into()] }];
+        s.interfaces = vec![NetIface {
+            name: "enp0s1".into(),
+            state: "UP".into(),
+            ipv4: vec!["10.0.2.15/24".into()],
+        }];
         assert!(s.network_summary().starts_with("sem rota"));
         s.gateway = Some(("10.0.2.2".into(), "enp0s1".into()));
-        assert_eq!(s.network_summary(), "conectada — enp0s1 10.0.2.15/24 via 10.0.2.2");
+        assert_eq!(
+            s.network_summary(),
+            "conectada — enp0s1 10.0.2.15/24 via 10.0.2.2"
+        );
     }
 
     #[test]
     fn resolv_conf() {
-        assert_eq!(parse_resolv_conf("# x\nnameserver 10.0.2.3\nnameserver ::1\nsearch lan\n"), vec!["10.0.2.3", "::1"]);
+        assert_eq!(
+            parse_resolv_conf("# x\nnameserver 10.0.2.3\nnameserver ::1\nsearch lan\n"),
+            vec!["10.0.2.3", "::1"]
+        );
     }
 }

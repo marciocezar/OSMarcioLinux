@@ -4,6 +4,20 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/);
 versões em [SemVer](https://semver.org/lang/pt-BR/). A versão é da
 distribuição, não do kernel.
 
+## [0.2.1] — não lançada (hotfix do OSMarcio Browser)
+
+### Corrigido
+- **Botão X da janela (e Alt+F4, Ctrl+Q) não fechava o OSMarcio Browser**: `can_close` usava `close_browser(0)` e sempre retornava 0 (impasse com o CEF Views). Agora segue o protocolo `try_close_browser()` + `on_window_destroyed`, sem processos órfãos.
+- Ctrl+W com várias abas fechava a janela inteira (`DoClose` padrão da BrowserView); agora fecha só a aba.
+- Lints `collapsible_if` pré-existentes do browser.
+
+### Adicionado
+- Ícone original do OSMarcio Browser (SVG + PNG 16–256), aplicado à janela, barra de tarefas, Alt+Tab, menu e pacote.
+- Janela **Sobre o OSMarcio Browser** (menu ☰, F1, `--about`) com versões reais do Browser, Chromium e CEF lidas do `libcef.so` carregado.
+- Verificação de atualizações segura (`--check-updates` e botão no Sobre): dpkg/APT/manifesto homologado, sem baixar ou executar binários.
+- Pacote `osmarcio-browser_<versão>_<arch>.deb`; alvos `browser-build/run/test/package/version/check-updates/icons/install/release`.
+- `scripts/test/qga.py` (qemu-guest-agent) e `make test-browser-hotfix`.
+
 ## [0.2.0] — não lançada (em desenvolvimento)
 
 ### Adicionado

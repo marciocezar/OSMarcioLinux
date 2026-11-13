@@ -54,19 +54,13 @@ ch systemctl enable systemd-networkd systemd-resolved >/dev/null 2>&1
 # Perfil desktop: login gráfico + apps OSMarcio -------------------------------
 if [[ $PROFILE != minimal ]]; then
   ARCH_DEBS="$OSM_ROOT/out/debs"
-  for app in osmarcio-terminal osmarcio-info; do
+  for app in osmarcio-terminal osmarcio-info osmarcio-browser; do
     deb="$ARCH_DEBS/${app}_${OSM_VERSION}_${ARCH}.deb"
-    [[ -f $deb ]] || die "pacote ausente: ${deb#$OSM_ROOT/} (rode 'make debs')"
+    [[ -f $deb ]] || die "pacote ausente: ${deb#$OSM_ROOT/} (rode 'make debs' / 'make browser-package')"
     cp "$deb" "$R/tmp/"
     ch env DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends "/tmp/$(basename "$deb")" >/dev/null
     rm -f "$R/tmp/$(basename "$deb")"
   done
-  # OSMarcio Browser: bundle Rust + runtime CEF (scripts/build/browser-bundle.sh).
-  BUNDLE="$OSM_ROOT/out/browser-bundle-$ARCH-v$OSM_VERSION"
-  [[ -x $BUNDLE/osmarcio-browser && -f $BUNDLE/libcef.so ]] \
-    || die "bundle do browser ausente: ${BUNDLE#$OSM_ROOT/} (rode 'make browser-bundle')"
-  mkdir -p "$R/opt/osmarcio"
-  cp -a "$BUNDLE" "$R/opt/osmarcio/browser"
   # Senha temporária do 1º boot também na tela de login gráfica (pam_echo
   # mostra o arquivo como mensagem informativa; some quando o arquivo some).
   sed -i '1a auth    optional        pam_echo.so file=/etc/issue.d/50-osmarcio-firstboot.issue' "$R/etc/pam.d/lightdm"
