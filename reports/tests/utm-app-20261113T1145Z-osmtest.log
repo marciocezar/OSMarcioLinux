@@ -1,0 +1,18 @@
+HOST login-typed
+OSMTEST BEGIN-DESKTOP
+OSMTEST PASS desktop-session xfce4-session pid=1007 DISPLAY=:0 tipo=x11
+OSMTEST PASS desktop-xfwm4 em execução
+OSMTEST PASS desktop-xfce4-panel em execução
+OSMTEST PASS desktop-xfdesktop em execução
+OSMTEST PASS desktop-resolution 1280x800 (Virtual-1)
+OSMTEST PASS terminal-window janela X11 29360132 (OSMarcio Terminal)
+OSMTEST PASS terminal-shell bash executou comando digitado: 'OSMTERM-42 osmarcio /bin/bash'
+OSMTEST PASS browser-init OSMarcio Browser 0.2.0 (CEF 156.0.26+g8ea0c73+chromium-156.0.8078.88)
+OSMTEST PASS browser-window janela X11 31457282
+OSMTEST PASS browser-https example.com status 200
+OSMTEST PASS browser-sandbox renderer pid=1367 seccomp=2 pidns-aninhado
+OSMTEST PASS browser-no-sandbox nenhum processo com --no-sandbox
+OSMTEST INFO browser-rss-MiB=747 mem-used-MiB=597
+OSMTEST INFO screenshot-browser
+OSMTEST END-DESKTOP
+HOST DONE

@@ -37,6 +37,7 @@ dosfstools	4.2-1.2	arm64
 dpkg	1.22.22	arm64
 dracut-install	106-6	arm64
 e2fsprogs	1.47.2-3+b12	arm64
+elementary-xfce-icon-theme	0.21-1	all
 exo-utils	4.20.0-1	arm64
 fdisk	2.41.5-0+deb13u1	arm64
 file	1:5.46-5	arm64

@@ -1,0 +1,3 @@
+# OSMarcio Linux — aplicativos padrão do XFCE (menu "Emulador de terminal"/"Navegador web", Ctrl+Alt+T)
+TerminalEmulator=osmarcio-terminal
+WebBrowser=osmarcio-browser

@@ -242,9 +242,21 @@ fn add(panel: &Panel, v: impl Into<View>) -> View {
     v
 }
 
+/// Layout vertical com os filhos esticados na largura (cross axis = STRETCH).
+/// `BoxLayoutSettings::default()` do cef-rs zera a struct, o que dá
+/// `cross_axis_alignment = START`: a BrowserView ficava com a largura
+/// preferida (0 px) e a página carregava mas não aparecia.
+fn vbox_settings() -> BoxLayoutSettings {
+    BoxLayoutSettings {
+        horizontal: 0,
+        cross_axis_alignment: AxisAlignment::STRETCH,
+        ..Default::default()
+    }
+}
+
 fn build_ui(window: Window) {
     let root = panel_create(None).expect("panel");
-    root.set_to_box_layout(Some(&BoxLayoutSettings { horizontal: 0, ..Default::default() }));
+    root.set_to_box_layout(Some(&vbox_settings()));
 
     let tabstrip = panel_create(None).expect("panel");
     let tab_layout = hbox(&tabstrip, 2);
@@ -275,7 +287,7 @@ fn build_ui(window: Window) {
     }
 
     let content = panel_create(None).expect("panel");
-    content.set_to_box_layout(Some(&BoxLayoutSettings { horizontal: 0, ..Default::default() }));
+    content.set_to_box_layout(Some(&vbox_settings()));
 
     let status = button("", "", 0);
     status.set_enabled(0);
@@ -284,7 +296,7 @@ fn build_ui(window: Window) {
     add(&root, &toolbar);
     let mut content_view = add(&root, &content);
     add(&root, &status);
-    if let Some(l) = root.set_to_box_layout(Some(&BoxLayoutSettings { horizontal: 0, ..Default::default() })) {
+    if let Some(l) = root.set_to_box_layout(Some(&vbox_settings())) {
         l.set_flex_for_view(Some(&mut content_view), 1);
     }
 
@@ -376,7 +388,7 @@ pub fn new_tab(input: Option<String>) {
     tabstrip.add_child_view_at(Some(&mut bv), (n - 1).max(0));
     let mut vv: View = (&view).into();
     content.add_child_view(Some(&mut vv));
-    if let Some(l) = content.set_to_box_layout(Some(&BoxLayoutSettings { horizontal: 0, ..Default::default() })) {
+    if let Some(l) = content.set_to_box_layout(Some(&vbox_settings())) {
         l.set_flex_for_view(Some(&mut vv), 1);
     }
 

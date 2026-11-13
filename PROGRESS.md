@@ -1,4 +1,4 @@
-# PROGRESS — OSMarcio Linux 0.1.0
+# PROGRESS — OSMarcio Linux 0.2.0
 
 Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 **Parcial** · **Bloqueado** · **Planejado**. Atualizado em 2026-11-13.
@@ -8,13 +8,13 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 | 1 Assessment | Implementado e testado |
 | 2 Workspace e Setup | Parcial (Mac testado; Windows/WSL2 não executados) |
 | 3 Linux Minimal | Implementado e testado (ARM64) |
-| 4 UTM ARM64 | Parcial (QEMU/HVF testado; app UTM não) |
+| 4 UTM ARM64 | Implementado e testado (QEMU/HVF + app UTM 4.7.5) |
 | 5 VirtualBox x86_64 | Planejado |
-| 6 Desktop | Planejado (ADR 0003 proposta) |
-| 7 Terminal Rust | Implementado sem teste completo |
+| 6 Desktop | Parcial (XFCE/X11 + LightDM funcionando; sem tema/app "Sobre" próprios) |
+| 7 Terminal Rust | Implementado e testado (dentro do desktop OSMarcio, QEMU e UTM) |
 | 8 Editor | Planejado |
 | 9 File Manager | Planejado |
-| 10 Browser + CEF | Planejado (validação documental feita; POC pendente) |
+| 10 Browser + CEF | Parcial (abre, HTTPS, sandbox, renderiza no desktop ARM64; 2 avisos clippy) |
 | 11 Software Center | Planejado |
 | 12 Aplicativos externos | Planejado |
 | 13 Settings | Planejado |
@@ -25,6 +25,13 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 | 18 Release | Planejado |
 
 ---
+
+## Correção 2026-11-13 — boot no UTM e desktop · Implementado e testado
+- **Problema:** a `.img` Minimal v0.2.0 foi anexada no UTM como "Boot ISO Image" (CD USB) + disco VirtIO vazio → UEFI caía no `Shell>`. A imagem também não tinha desktop.
+- **Correção:** `make run-utm` cria a VM com a IMG como disco VirtIO; perfil `desktop` (LightDM + XFCE) com Terminal e Browser; bug de layout do Browser (página invisível) corrigido.
+- **Artefato:** `images/utm/OSMarcioLinux-UTM-AArch64-Desktop-v0.2.0.img`.
+- **Evidências:** `reports/OSMarcioLinux_UTM_Boot_Fix.md`, `reports/tests/desktop-arm64-20261113T114410Z.md`, `reports/tests/boot-arm64-20261113T113805Z.md`, `reports/tests/utm-app-20261113T1145Z-*`, capturas em `reports/tests/screenshots/`.
+- **Guia:** `docs/installation/UTM_Quick_Start.md`.
 
 ## Fase 1 — Assessment · Implementado e testado
 - **Objetivo:** escolher base, kernel, desktop, validar CEF e ferramentas.
@@ -46,7 +53,10 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 - **Evidências:** `reports/tests/boot-arm64-20261113T023007Z.md` (+ logs seriais).
 - **Problemas:** firewall sem regras; x86_64 não construído.
 
-## Fase 4 — UTM ARM64 · Parcial
+## Fase 4 — UTM ARM64 · Implementado e testado
+- **Atualização 2026-11-13:** testado no **app UTM 4.7.5** (VM criada por `make run-utm`; evidências via qemu-guest-agent). Não testado: teclado/mouse físicos e resolução dinâmica na janela do UTM.
+
+### Histórico (0.1.0)
 - **Implementado:** IMG RAW/GPT/UEFI, GRUB em caminho removível, expansão da raiz, manifesto + SHA-256, `make run-qemu-arm64`, `make test-utm`, guia UTM.
 - **Testes:** 2 boots no QEMU 11 + HVF, 0 falhas (boot, login, rede, DNS, HTTPS, NTP, APT install/remove, persistência).
 - **Não testado:** importação e boot no **aplicativo** UTM; display gráfico (só console).
@@ -55,14 +65,25 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 ## Fase 5 — VirtualBox x86_64 · Planejado
 - `mkimage-uefi.sh` e `rootfs.sh` já aceitam `amd64`, sem execução. Script de VM escrito, não testado. Nenhuma ISO.
 
-## Fase 7 — Terminal Rust · Implementado sem teste completo
+## Fase 6 — Desktop · Parcial
+- **Implementado:** perfil `desktop` (plano B da ADR 0003: XFCE 4.20 sobre X11, LightDM 1.32, Greybird-dark + elementary-xfce), senha temporária do 1º boot na tela de login (`pam_echo`), painel com lançadores, apps padrão do XFCE apontando para os apps OSMarcio.
+- **Testes:** `make test-desktop` (login real no greeter, troca de senha, sessão, xfwm4, painel, xfdesktop, resolução) — 0 falhas; mesmo autoteste no app UTM — 12/12.
+- **Falta:** tema/ícones próprios, janela "Sobre", gerenciador de arquivos, cliques nos lançadores testados, resolução dinâmica, fontes CJK.
+
+## Fase 7 — Terminal Rust · Implementado e testado
+- **Atualização 2026-11-13:** abre no desktop OSMarcio (QEMU e UTM) e executa comandos digitados no bash.
+
+### Histórico
 - **Implementado:** GTK4 + VTE, abas (nova, fechar, fechar outras, renomear, reordenar, Ctrl+T/W/Tab), regra da última aba, copiar/colar, zoom, temas, configuração XDG, `.deb`.
 - **Testes:** 12 unitários; 10/10 de GUI em Xvfb; `.deb` instalado/removido em Debian 13 limpo.
 - **Falta:** testar dentro do OSMarcio Linux com desktop real (Wayland), janela de preferências, ícone próprio, aba nova no diretório atual.
 - **Arquivos:** `apps/osmarcio-terminal/`, `crates/osmarcio-core/`, `docs/terminal/OSMarcio_Terminal.md`.
 
-## Fase 10 — Browser · Planejado
-- Validação documental (versão, arquiteturas declaradas, licença) na ADR 0005. Nenhum código: regra "não construir o Browser antes de validar CEF".
+## Fase 10 — Browser · Parcial
+- **Implementado (código já existente em `apps/osmarcio-browser`, CEF 156 / Chromium 156):** janela Rust (CEF Views, estilo Alloy), abas, barra de endereços, favoritos, downloads.
+- **Testes 2026-11-13 (dentro do OSMarcio Linux ARM64, QEMU e UTM):** binários aarch64, nenhuma lib ausente, janela abre, HTTPS 200, página renderizada (verificação por pixels), sandbox seccomp + PID namespace, sem `--no-sandbox`, ~740 MiB RSS.
+- **Corrigido:** BrowserView com largura 0 (cross-axis START do `BoxLayoutSettings::default()` do cef-rs).
+- **Falta:** 2 avisos `clippy::collapsible_if`; `test-browser-gui.sh` sem checagem de pixels; fontes CJK.
 
 ## Fase 14 — ROCK Pi 4A · Bloqueado
 - Sem hardware nesta sessão. Nenhuma imagem será criada a partir da imagem UTM.
@@ -75,6 +96,6 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 - Faltam: 20 dos 27 diagramas pedidos (os demais descrevem componentes que ainda não existem), relatórios de Browser/Install/Release (serão criados quando houver conteúdo real).
 
 ## Limitações conhecidas (globais)
-- Nenhum desktop gráfico ainda; a imagem é só console.
-- Nenhum commit git foi feito (o manifesto mostra "sem-commit").
+- Desktop sem aceleração 3D (renderização por software) e sem tema próprio.
+- Há um único commit ("first commit"); as alterações desta correção não estão commitadas.
 - Licença GPL-3.0-or-later escolhida provisoriamente.

@@ -1,0 +1,5 @@
+[Desktop Entry]
+# OSMarcio Linux: ainda não há cliente de e-mail/gerenciador de arquivos (Fases 9/12)
+Type=Application
+Name=xfce4-mail-reader
+Hidden=true

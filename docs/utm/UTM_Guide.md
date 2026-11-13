@@ -1,5 +1,10 @@
 # Guia — OSMarcio Linux no UTM (Mac Apple Silicon)
 
+> **Imagem desktop (0.2.0):** use o guia curto
+> [docs/installation/UTM_Quick_Start.md](../installation/UTM_Quick_Start.md)
+> e `make run-utm`. Este guia descreve a imagem **Minimal** (só console).
+> Atenção: a `.img` é um **disco**; anexá-la como CD/ISO faz o UEFI cair no `Shell>`.
+
 Imagem: `images/utm/OSMarcioLinux-UTM-AArch64-Minimal-v0.1.0.img`
 (RAW, GPT, UEFI, ARM64). Ela **não** é uma ISO de instalação: é um disco
 pronto, como o de uma VM recém-instalada.

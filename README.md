@@ -5,11 +5,15 @@ LTS**, com aplicativos próprios em **Rust**. Projeto educacional e
 incremental, independente do antigo OSMarcio (kernel em Rust), que fica
 intocado em outro diretório.
 
-> **Estado (0.1.0, em desenvolvimento):** a imagem **Minimal ARM64** inicializa
-> por UEFI, tem rede, APT e persistência — testada no QEMU com HVF (o motor
-> do UTM). O **OSMarcio Terminal** funciona e é empacotado em `.deb`.
-> Desktop, browser, x86_64/VirtualBox e ROCK Pi 4A ainda **não** existem.
-> Detalhes honestos em [PROGRESS.md](PROGRESS.md).
+> **Estado (0.2.0, em desenvolvimento):** a imagem **Desktop ARM64**
+> (`images/utm/OSMarcioLinux-UTM-AArch64-Desktop-v0.2.0.img`) inicializa por
+> UEFI até o login gráfico **LightDM → XFCE**, com **OSMarcio Terminal** e
+> **OSMarcio Browser** (Rust + CEF) — testada no QEMU/HVF (`make test-desktop`).
+> A `.img` é um **disco**, não uma ISO: no UTM ela deve ser importada como
+> disco VirtIO ([UTM Quick Start](docs/installation/UTM_Quick_Start.md)).
+> x86_64/VirtualBox e ROCK Pi 4A ainda **não** existem.
+> Detalhes honestos em [PROGRESS.md](PROGRESS.md) e
+> [relatório da correção do boot no UTM](reports/OSMarcioLinux_UTM_Boot_Fix.md).
 
 ## Começo rápido (Mac Apple Silicon)
 
@@ -22,16 +26,21 @@ make image-utm
 ```
 
 ```bash
-make test-utm
+make test-boot
 ```
 
 ```bash
-make run-qemu-arm64
+make test-desktop
 ```
 
-Depois, para o app UTM: [docs/utm/UTM_Guide.md](docs/utm/UTM_Guide.md).
-No primeiro boot a tela de login mostra a senha temporária do usuário
-`osmarcio`; trocá-la é obrigatório.
+```bash
+make run-utm
+```
+
+`make run-utm` cria (só na 1ª vez) e inicia a VM no app UTM — passo a passo
+manual em [docs/installation/UTM_Quick_Start.md](docs/installation/UTM_Quick_Start.md).
+Sem UTM: `make run-qemu-arm64`. No primeiro boot a tela de login mostra a
+senha temporária do usuário `osmarcio`; trocá-la é obrigatório.
 
 Apps Rust (compilam no container Linux):
 

@@ -41,10 +41,14 @@ res=$(asuser xrandr 2>/dev/null | awk '/\*/{print $1; exit}')
 [[ -n $res ]] && pass "desktop-resolution $res ($(asuser xrandr | awk '/ connected/{print $1; exit}'))" || fail "desktop-resolution xrandr sem modo ativo"
 
 # 2. OSMarcio Terminal: abre janela e executa comando no shell.
+# (o PID de "$!" seria o do runuser; a janela pertence ao processo do app)
 asuser osmarcio-terminal >/tmp/osm-term.log 2>&1 &
-tpid=$!
 win=""
-for _ in $(seq 60); do win=$(asuser xdotool search --pid "$tpid" 2>/dev/null | tail -1); [[ -n $win ]] && break; sleep 0.5; done
+for _ in $(seq 60); do
+  tpid=$(pgrep -u "$U" -n -x osmarcio-termin)
+  [[ -n $tpid ]] && win=$(asuser xdotool search --onlyvisible --pid "$tpid" 2>/dev/null | tail -1)
+  [[ -n $win ]] && break; sleep 0.5
+done
 if [[ -n $win ]]; then
   pass "terminal-window janela X11 $win ($(asuser xdotool getwindowname "$win"))"
   rm -f /tmp/osmterm.txt
@@ -81,9 +85,16 @@ pgrep -u "$U" -f -- '--no-sandbox' >/dev/null && fail "browser-no-sandbox há pr
 rss=0; for p in $(pgrep -u "$U" -f /opt/osmarcio/browser/osmarcio-browser); do r=$(awk '/^VmRSS:/{print $2}' /proc/$p/status 2>/dev/null); rss=$((rss + ${r:-0})); done
 out "INFO browser-rss-MiB=$((rss/1024)) mem-used-MiB=$(LC_ALL=C free -m | awk '/^Mem:/{print $3}')"
 
-# Traz o terminal para frente ao lado do browser para a captura de tela.
+# Capturas de tela pelo host: 1) browser em primeiro plano (o host mede os
+# pixels da área da página); 2) terminal em primeiro plano.
+if [[ -n $bw ]]; then
+  asuser xdotool windowactivate --sync "$bw" 2>/dev/null
+  asuser xdotool windowmove "$bw" 0 0 windowsize "$bw" 1100 740 2>/dev/null
+  sleep 3; out "INFO screenshot-browser"; sleep 10
+fi
 [[ -n $win ]] && asuser xdotool windowactivate "$win" 2>/dev/null
 out "END-DESKTOP"
-# O host captura a tela ao ver END-DESKTOP; depois a VM desliga.
-if [[ $MODE == *poweroff* ]]; then sleep 25; systemctl poweroff; fi
+# O host captura a tela ao ver END-DESKTOP. Os apps rodam no cgroup desta
+# unidade: sair agora os mataria antes da captura, então esperamos.
+if [[ $MODE == *poweroff* ]]; then sleep 25; systemctl poweroff; else sleep 1800; fi
 exit 0
