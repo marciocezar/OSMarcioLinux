@@ -1,0 +1,27 @@
+[package]
+name = "osmarcio-terminal"
+description = "OSMarcio Terminal — terminal gráfico GTK4 + VTE escrito em Rust"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+osmarcio-core.workspace = true
+gtk4.workspace = true
+vte4.workspace = true
+serde.workspace = true
+log.workspace = true
+env_logger.workspace = true
+
+[dev-dependencies]
+toml.workspace = true
+
+[lints]
+workspace = true
+
+# Empacotamento Debian (scripts/build/deb.sh lê estes metadados).
+[package.metadata.osmarcio-deb]
+depends = "libgtk-4-1, libvte-2.91-gtk4-0, bash"
+section = "x11"
+desktop = "packaging/osmarcio-terminal.desktop"

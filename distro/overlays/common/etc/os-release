@@ -1,0 +1,9 @@
+PRETTY_NAME="OSMarcio Linux @VERSION@ (base Debian 13 trixie)"
+NAME="OSMarcio Linux"
+VERSION_ID="@VERSION@"
+VERSION="@VERSION@"
+VERSION_CODENAME=trixie
+ID=osmarcio-linux
+ID_LIKE=debian
+HOME_URL="https://www.debian.org/"
+BUG_REPORT_URL="https://www.debian.org/Bugs/"

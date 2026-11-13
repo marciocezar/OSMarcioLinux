@@ -1,0 +1,27 @@
+[package]
+name = "osmarcio-browser"
+description = "OSMarcio Browser — navegador em Rust com motor Chromium via CEF"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+osmarcio-core.workspace = true
+# cef-rs: bindings Rust do Chromium Embedded Framework (CEF 156 / Chromium 156).
+# Versão fixada: atualizar o CEF é uma decisão de segurança consciente.
+cef = { version = "=156.4.0", features = ["sandbox"] }
+log.workspace = true
+env_logger.workspace = true
+
+[lints.rust]
+# A API C do CEF exige um ponteiro cru (sandbox_info) em initialize().
+unsafe_code = "deny"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[package.metadata.osmarcio-deb]
+depends = "libnss3, libnspr4, libatk1.0-0t64, libatk-bridge2.0-0t64, libcups2t64, libxkbcommon0, libgbm1, libasound2t64, libxcomposite1, libxdamage1, libxrandr2, libxfixes3, libdrm2, libdbus-1-3, libpango-1.0-0, libcairo2, fonts-dejavu-core, ca-certificates"
+section = "web"
+desktop = "packaging/osmarcio-browser.desktop"

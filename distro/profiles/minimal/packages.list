@@ -1,0 +1,47 @@
+# Perfil MINIMAL — OSMarcio Linux
+# Um pacote por linha. Comentários com '#'. Lido por scripts/build/rootfs.sh.
+# Base "minbase" do Debian + o mínimo para boot UEFI, rede, APT e administração.
+
+# init e serviços
+systemd-sysv
+systemd-resolved
+systemd-timesyncd
+dbus
+udev
+kmod
+
+# boot (o kernel é adicionado por arquitetura: linux-image-arm64 / linux-image-amd64)
+initramfs-tools
+zstd
+
+# administração
+sudo
+passwd
+login
+bash-completion
+less
+nano
+procps
+psmisc
+locales
+tzdata
+
+# rede
+iproute2
+iputils-ping
+netbase
+ca-certificates
+curl
+wget
+nftables
+
+# APT com HTTPS e verificação de assinaturas
+apt
+gnupg
+debian-archive-keyring
+
+# armazenamento / primeiro boot (expandir partição raiz)
+e2fsprogs
+dosfstools
+cloud-guest-utils
+fdisk

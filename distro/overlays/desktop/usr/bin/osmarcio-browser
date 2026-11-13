@@ -1,0 +1,4 @@
+#!/bin/sh
+# OSMarcio Browser — o CEF procura libcef.so, *.pak, icudtl.dat etc. no
+# diretório do executável; por isso o bundle fica inteiro em /opt.
+exec /opt/osmarcio/browser/osmarcio-browser "$@"

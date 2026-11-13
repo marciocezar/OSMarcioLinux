@@ -1,0 +1,11 @@
+[Unit]
+Description=OSMarcio Linux - remove aviso de senha temporária após a troca
+After=osmarcio-firstboot.service
+Before=getty.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/osmarcio/firstboot-cleanup.sh
+
+[Install]
+WantedBy=multi-user.target

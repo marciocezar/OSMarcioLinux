@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfwm4" version="1.0">
+  <property name="general" type="empty">
+    <property name="theme" type="string" value="Greybird-dark"/>
+    <property name="title_font" type="string" value="DejaVu Sans Bold 10"/>
+    <property name="workspace_count" type="int" value="2"/>
+    <!-- sem compositor: mais leve e estável em virtio-gpu sem 3D -->
+    <property name="use_compositing" type="bool" value="false"/>
+  </property>
+</channel>

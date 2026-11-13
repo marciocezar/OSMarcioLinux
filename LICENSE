@@ -1,0 +1,13 @@
+OSMarcio Linux — código próprio (aplicativos Rust, scripts, configurações)
+
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Este programa é software livre: você pode redistribuí-lo e/ou modificá-lo sob
+os termos da GNU General Public License, versão 3 ou (a seu critério)
+qualquer versão posterior, conforme publicada pela Free Software Foundation.
+
+Texto completo: /usr/share/common-licenses/GPL-3 (em sistemas Debian) ou
+https://www.gnu.org/licenses/gpl-3.0.html
+
+Componentes de terceiros (kernel Linux, pacotes Debian, GTK, VTE, Chromium/CEF)
+mantêm suas próprias licenças; veja docs/security/Licenses.md.

@@ -1,0 +1,12 @@
+[Unit]
+Description=OSMarcio Linux - autoteste (somente sob QEMU com fw_cfg opt/osmarcio/selftest)
+After=network-online.target osmarcio-firstboot.service systemd-resolved.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/osmarcio/selftest.sh
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target

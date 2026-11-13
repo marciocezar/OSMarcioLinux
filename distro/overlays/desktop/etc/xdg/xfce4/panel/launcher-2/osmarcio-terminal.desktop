@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=OSMarcio Terminal
+GenericName=Terminal
+Comment=Use a linha de comando
+Exec=osmarcio-terminal
+Icon=utilities-terminal
+Terminal=false
+Categories=System;TerminalEmulator;GTK;
+Keywords=shell;prompt;command;bash;terminal;
+StartupNotify=true

@@ -1,0 +1,8 @@
+out/
+*.img
+*.img.partial
+*.iso
+*.vdi
+*.qcow2
+*.tar
+target/

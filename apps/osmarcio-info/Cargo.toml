@@ -1,0 +1,18 @@
+[package]
+name = "osmarcio-info"
+description = "osmarcio-info — resumo do sistema OSMarcio Linux a partir de /etc, /proc e /sys"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+osmarcio-core.workspace = true
+serde_json = "1"
+
+[lints]
+workspace = true
+
+[package.metadata.osmarcio-deb]
+depends = "iproute2"
+section = "admin"

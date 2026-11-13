@@ -1,0 +1,14 @@
+[Unit]
+Description=OSMarcio Linux - configuração do primeiro boot
+ConditionPathExists=!/var/lib/osmarcio/firstboot.done
+After=local-fs.target systemd-remount-fs.service
+Before=getty.target serial-getty@ttyAMA0.service systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/osmarcio/firstboot.sh
+StandardOutput=journal+console
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

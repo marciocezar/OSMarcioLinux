@@ -1,0 +1,74 @@
+# Perfil DESKTOP — OSMarcio Linux (herda o perfil minimal)
+# Um pacote por linha. Comentários com '#'. Lido por scripts/build/rootfs.sh.
+#
+# Ambiente gráfico: XFCE sobre X11 + LightDM (plano B da ADR 0003).
+# Motivo da escolha nesta etapa: no UTM (virtio-gpu sem 3D) o X11 com o
+# driver "modesetting" + spice-vdagent é o caminho mais previsível
+# (resolução dinâmica, área de transferência) e o CEF roda em X11 nativo.
+
+# servidor gráfico
+xserver-xorg-core
+xserver-xorg-input-libinput
+x11-xserver-utils
+x11-utils
+xauth
+libgl1-mesa-dri
+
+# login gráfico (display manager)
+lightdm
+lightdm-gtk-greeter
+
+# desktop XFCE (componentes, sem metapacote)
+xfce4-session
+xfwm4
+xfce4-panel
+xfdesktop4
+xfce4-settings
+xfconf
+xfce4-notifyd
+xfce4-appfinder
+greybird-gtk-theme
+adwaita-icon-theme
+hicolor-icon-theme
+fonts-dejavu-core
+fonts-liberation
+
+# sessão, permissões (desligar/reiniciar), acessibilidade
+dbus-user-session
+dbus-x11
+libpam-systemd
+polkitd
+at-spi2-core
+xdg-utils
+
+# integração com UTM/QEMU (resolução dinâmica, clipboard)
+spice-vdagent
+qemu-guest-agent
+
+# OSMarcio Terminal (GTK4 + VTE) — dependências do .deb
+libgtk-4-1
+libvte-2.91-gtk4-0
+
+# OSMarcio Browser (Rust + CEF) — dependências do runtime CEF
+libnss3
+libnspr4
+libatk1.0-0t64
+libatk-bridge2.0-0t64
+libcups2t64
+libxkbcommon0
+libgbm1
+libasound2t64
+libxcomposite1
+libxdamage1
+libxrandr2
+libxfixes3
+libxshmfence1
+libdrm2
+libpango-1.0-0
+libcairo2
+
+# usado pelo autoteste gráfico (localizar janelas; ~100 KiB)
+xdotool
+
+# utilitário usado pelo autoteste (arquitetura dos binários)
+file

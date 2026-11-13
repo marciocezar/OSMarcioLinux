@@ -1,0 +1,10 @@
+# Perfil minimal: rede cabeada via DHCP com systemd-networkd.
+# (Os perfis desktop/developer usam NetworkManager.)
+[Match]
+Name=en* eth*
+
+[Network]
+DHCP=yes
+
+[DHCPv4]
+UseDomains=yes

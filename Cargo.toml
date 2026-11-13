@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/osmarcio-core",
+    "apps/osmarcio-terminal",
+    "apps/osmarcio-info",
+    "apps/osmarcio-browser",
+]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+authors = ["OSMarcio Linux"]
+repository = "https://example.invalid/osmarcio-linux"
+rust-version = "1.88"
+
+[workspace.dependencies]
+osmarcio-core = { path = "crates/osmarcio-core" }
+gtk4 = { version = "0.11", features = ["v4_18"] }  # Debian 13 traz GTK 4.18
+vte4 = "0.10"
+serde = { version = "1", features = ["derive"] }
+toml = "1"
+directories = "6"
+thiserror = "2"
+log = "0.4"
+env_logger = "0.11"
+tempfile = "3"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = "thin"
+strip = true
