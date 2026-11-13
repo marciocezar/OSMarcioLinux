@@ -5,15 +5,15 @@ LTS**, com aplicativos próprios em **Rust**. Projeto educacional e
 incremental, independente do antigo OSMarcio (kernel em Rust), que fica
 intocado em outro diretório.
 
-> **Estado (0.2.1, em desenvolvimento):** a imagem **Desktop ARM64**
-> (`images/utm/OSMarcioLinux-UTM-AArch64-Desktop-v0.2.1.img`) inicializa por
-> UEFI até o login gráfico **LightDM → XFCE**, com **OSMarcio Terminal** e
-> **OSMarcio Browser** (Rust + CEF) — testada no QEMU/HVF (`make test-desktop`).
-> A `.img` é um **disco**, não uma ISO: no UTM ela deve ser importada como
-> disco VirtIO ([UTM Quick Start](docs/installation/UTM_Quick_Start.md)).
+> **Estado (0.3.0, em desenvolvimento):** a imagem **Desktop ARM64**
+> (`images/utm/OSMarcioLinux-UTM-AArch64-Desktop-v0.3.0.img`) inicializa por
+> UEFI até **LightDM → XFCE** com quatro aplicativos próprios em Rust:
+> **OSMarcio Terminal** (GTK4 + VTE), **OSMarcio Browser** (Rust + CEF),
+> **OSMarcio Files** (GTK4 + GIO) e **Campo Minado** (GTK4) — testados no
+> QEMU/HVF (`make test-desktop-apps`). A `.img` é um **disco**, não uma ISO
+> ([UTM Quick Start](docs/installation/UTM_Quick_Start.md)).
 > x86_64/VirtualBox e ROCK Pi 4A ainda **não** existem.
-> Detalhes honestos em [PROGRESS.md](PROGRESS.md) e
-> [relatório da correção do boot no UTM](reports/OSMarcioLinux_UTM_Boot_Fix.md).
+> Detalhes honestos em [PROGRESS.md](PROGRESS.md).
 
 ## Começo rápido (Mac Apple Silicon)
 
@@ -64,7 +64,10 @@ make terminal-deb
 | Como o sistema inicializa | [docs/boot/Boot_Flow.md](docs/boot/Boot_Flow.md) |
 | Rede | [docs/networking/Diagnostico_Rede.md](docs/networking/Diagnostico_Rede.md) |
 | Terminal | [docs/terminal/OSMarcio_Terminal.md](docs/terminal/OSMarcio_Terminal.md) |
-| Browser | [docs/browser/OSMarcioBrowser_Architecture.md](docs/browser/OSMarcioBrowser_Architecture.md) · [hotfix 0.2.1](reports/OSMarcioBrowser_Fix_Report.md) |
+| Browser | [docs/browser/OSMarcioBrowser_Architecture.md](docs/browser/OSMarcioBrowser_Architecture.md) · [hotfix 0.2.1](reports/OSMarcioBrowser_Fix_Report.md) · [maximizar](docs/browser/OSMarcioBrowser_Window_Management.md) |
+| Files | [arquitetura](docs/applications/OSMarcioFiles_Architecture.md) · [guia](docs/applications/OSMarcioFiles_User_Guide.md) |
+| Campo Minado | [arquitetura](docs/applications/OSMarcioMinesweeper_Architecture.md) · [guia](docs/applications/OSMarcioMinesweeper_User_Guide.md) |
+| Apps do desktop | [arquitetura](docs/architecture/Desktop_Application_Architecture.md) · [testes](docs/testing/Desktop_Application_Test_Plan.md) · [Makefile](docs/development/Makefile_Commands.md) · [problemas](docs/troubleshooting/Desktop_Troubleshooting.md) |
 | Testes | [docs/testing/Test_Strategy.md](docs/testing/Test_Strategy.md) |
 | Roadmap | [docs/roadmap/Roadmap.md](docs/roadmap/Roadmap.md) |
 | Relatórios | [reports/](reports/) |
@@ -73,7 +76,7 @@ make terminal-deb
 ## Estrutura
 
 ```
-apps/            aplicativos Rust (osmarcio-terminal)
+apps/            aplicativos Rust (terminal, browser, files, minesweeper, info)
 crates/          bibliotecas Rust compartilhadas (osmarcio-core)
 distro/          perfis de pacotes e overlays do rootfs
 build/docker/    container de build Debian 13

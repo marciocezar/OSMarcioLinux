@@ -54,7 +54,7 @@ ch systemctl enable systemd-networkd systemd-resolved >/dev/null 2>&1
 # Perfil desktop: login gráfico + apps OSMarcio -------------------------------
 if [[ $PROFILE != minimal ]]; then
   ARCH_DEBS="$OSM_ROOT/out/debs"
-  for app in osmarcio-terminal osmarcio-info osmarcio-browser; do
+  for app in osmarcio-terminal osmarcio-info osmarcio-browser osmarcio-files osmarcio-minesweeper; do
     deb="$ARCH_DEBS/${app}_${OSM_VERSION}_${ARCH}.deb"
     [[ -f $deb ]] || die "pacote ausente: ${deb#$OSM_ROOT/} (rode 'make debs' / 'make browser-package')"
     cp "$deb" "$R/tmp/"

@@ -73,6 +73,11 @@ if [[ -e /usr/sbin/lightdm ]]; then
   check app-browser-libs bash -c 'm=$(ldd /usr/lib/osmarcio-browser/libcef.so /usr/lib/osmarcio-browser/osmarcio-browser | grep "not found"); [[ -z $m ]] && echo "nenhuma biblioteca ausente" || { echo $m; false; }'
   check app-browser-version bash -c 'runuser -u osmarcio -- osmarcio-browser --version | tr -s " " | paste -sd"|" | cut -c1-118'
   check app-browser-icon bash -c 'ls /usr/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256}/apps/osmarcio-browser.png /usr/share/icons/hicolor/scalable/apps/osmarcio-browser.svg >/dev/null && grep -q "^Icon=osmarcio-browser$" /usr/share/applications/osmarcio-browser.desktop && echo "8 ícones + .desktop"'
+  for app in osmarcio-files osmarcio-minesweeper; do
+    check "app-$app" bash -c 'f=$(command -v '"$app"') && file -L "$f" | grep -o "'"$ELF"'" && ! ldd "$f" | grep "not found" && dpkg-query -W -f="\${Version}" '"$app"' && test -f /usr/share/icons/hicolor/256x256/apps/'"$app"'.png && desktop-file-validate /usr/share/applications/'"$app"'.desktop && echo " ícone+.desktop ok"'
+  done
+  check icons-distinct  bash -c 'n=$(md5sum /usr/share/icons/hicolor/128x128/apps/osmarcio-{terminal,browser,files,minesweeper}.png | cut -d" " -f1 | sort -u | wc -l); [[ $n == 4 ]] && echo "4 ícones próprios distintos"'
+  check mime-directory  bash -c 'd=$(runuser -u osmarcio -- env XDG_CONFIG_DIRS=/etc/xdg xdg-mime query default inode/directory); [[ $d == osmarcio-files.desktop ]] && echo "$d"'
   check userns-sandbox   bash -c 'v=$(cat /proc/sys/kernel/unprivileged_userns_clone 2>/dev/null || echo 1); [[ $v == 1 ]] && echo "user namespaces sem privilégio habilitados"'
 fi
 

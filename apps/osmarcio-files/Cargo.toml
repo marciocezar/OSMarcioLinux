@@ -1,0 +1,22 @@
+[package]
+name = "osmarcio-files"
+description = "OSMarcio Files — gerenciador de arquivos em Rust (GTK4 + GIO)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+osmarcio-core.workspace = true
+gtk4.workspace = true
+serde.workspace = true
+log.workspace = true
+env_logger.workspace = true
+
+[lints]
+workspace = true
+
+[package.metadata.osmarcio-deb]
+depends = "libgtk-4-1, shared-mime-info, desktop-file-utils"
+section = "utils"
+desktop = "packaging/osmarcio-files.desktop"

@@ -5,10 +5,12 @@ members = [
     "apps/osmarcio-terminal",
     "apps/osmarcio-info",
     "apps/osmarcio-browser",
+    "apps/osmarcio-files",
+    "apps/osmarcio-minesweeper",
 ]
 
 [workspace.package]
-version = "0.2.1"
+version = "0.3.0"
 edition = "2024"
 license = "GPL-3.0-or-later"
 authors = ["OSMarcio Linux"]

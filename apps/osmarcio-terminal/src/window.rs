@@ -37,7 +37,7 @@ impl TermWindow {
             .title("OSMarcio Terminal")
             .default_width(900)
             .default_height(560)
-            .icon_name("utilities-terminal")
+            .icon_name("osmarcio-terminal")
             .build();
 
         let notebook = gtk4::Notebook::builder()
@@ -152,13 +152,13 @@ impl TermWindow {
             .hscrollbar_policy(gtk4::PolicyType::Never)
             .build();
 
-        // Abas legíveis: no mínimo ~14 caracteres (≈140 px na fonte padrão),
+        // Abas legíveis: no mínimo ~18 caracteres (≈160 px na fonte padrão),
         // no máximo 28; títulos maiores terminam em "…" e aparecem inteiros
         // no tooltip. Medidas em caracteres (não pixels) acompanham a fonte
         // e a escala da tela; a faixa de abas rola quando não cabem.
         let label = gtk4::Label::builder()
             .label("Terminal")
-            .width_chars(14)
+            .width_chars(18)
             .max_width_chars(28)
             .ellipsize(pango::EllipsizeMode::End)
             .xalign(0.0)

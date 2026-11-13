@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OSMarcio Terminal — ícone original: janela de terminal com prompt. GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#24496e"/><stop offset="1" stop-color="#1d2b3a"/></linearGradient></defs><rect x="8" y="8" width="240" height="240" rx="56" fill="url(#bg)"/>
+<rect x="36" y="52" width="184" height="152" rx="14" fill="#0b1220" stroke="#2dd4bf" stroke-width="6"/>
+<path d="M36 80 H220" stroke="#2dd4bf" stroke-width="6"/>
+<g fill="#f59e0b"><circle cx="56" cy="66" r="5"/><circle cx="72" cy="66" r="5"/><circle cx="88" cy="66" r="5"/></g>
+<path d="M62 112 L94 136 L62 160" fill="none" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M110 166 H170" stroke="#e6fffb" stroke-width="14" stroke-linecap="round"/>
+</svg>

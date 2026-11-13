@@ -19,6 +19,9 @@ UTM_IMG    ?= $(wildcard images/utm/OSMarcioLinux-UTM-AArch64-$(PROFILE_CAP)-v$(
 .PHONY: help version doctor doctor-mac doctor-windows doctor-wsl \
         setup-mac setup-windows setup-wsl builder \
         apps-build apps-test apps-lint test-apps debs \
+        terminal-run files-build files-test files-run files-package \
+        minesweeper-build minesweeper-test minesweeper-run minesweeper-package \
+        desktop-build desktop-test test-desktop-apps \
         browser-build browser-test terminal-build terminal-test terminal-deb \
         editor-build files-build settings-build software-center-build \
         distro-build rootfs-arm64 rootfs-x86_64 image-minimal image-desktop image-developer \
@@ -69,7 +72,7 @@ apps-lint: ## rustfmt + clippy (-D warnings)
 apps-test: ## Testes unitários + teste de GUI do terminal (Xvfb)
 	@$(IN_BUILDER) bash -c "cargo test --workspace --locked && cargo build -p osmarcio-terminal --locked && GTK_A11Y=none scripts/test/test-terminal-gui.sh"
 test-apps: apps-test ## Alias de apps-test
-debs: terminal-deb info-deb ## Gera os .deb do Terminal e do osmarcio-info (Browser: make browser-package)
+debs: terminal-deb info-deb files-package minesweeper-package ## .deb do Terminal, info, Files e Campo Minado (Browser: make browser-package)
 info-deb: ## Gera out/debs/osmarcio-info_<versão>_<arch>.deb
 	@$(IN_BUILDER) scripts/build/deb.sh osmarcio-info
 browser-bundle: ## OSMarcio Browser (Rust + CEF) em out/browser-bundle-<arch>-v<versão>/
@@ -86,7 +89,7 @@ BROWSER_DEB := out/debs/osmarcio-browser_$(VERSION)_$(BROWSER_ARCH).deb
 browser-build: ## OSMarcio Browser: compila (release) e monta o bundle com o runtime CEF
 	@$(IN_BUILDER) scripts/build/browser-bundle.sh /work/$(BROWSER_BUNDLE) release
 browser-icons: ## Gera os PNGs 16…256 do ícone a partir do SVG original
-	@$(IN_BUILDER) scripts/build/browser-icons.sh
+	@$(IN_BUILDER) scripts/build/app-icons.sh
 browser-package: ## Gera out/debs/osmarcio-browser_<versão>_<arch>.deb (não sobrescreve)
 	@$(IN_BUILDER) scripts/build/browser-deb.sh
 browser-version: ## Versões reais (Browser, Chromium, CEF, cef-rs) do bundle compilado
@@ -114,8 +117,35 @@ test-browser-hotfix: ## Fechamento, ícone, Sobre e atualizações dentro do OSM
 	@scripts/test/test-browser-hotfix-qemu.sh "$(UTM_IMG)"
 editor-build: ## [planejado] OSMarcio Editor — Fase 8
 	@$(NOT_YET) $@ "Fase 8"
-files-build: ## [planejado] OSMarcio Files — Fase 9
-	@$(NOT_YET) $@ "Fase 9"
+LINUX_TARGET := out/target-linux-$(BROWSER_ARCH)/release
+# Executa um app GTK compilado: só num Linux com sessão gráfica (no Mac use a VM).
+define run_gui
+	@if [ "$(UNAME_S)" != Linux ] || [ -z "$$DISPLAY$$WAYLAND_DISPLAY" ]; then echo "$(1) precisa de Linux com sessão gráfica. No Mac: 'make run-utm' ou 'make run-qemu-arm64' e, na VM, '$(1)'."; exit 2; fi
+	@test -x $(LINUX_TARGET)/$(1) || { echo "binário ausente: rode 'make $(2)'"; exit 1; }
+	@$(LINUX_TARGET)/$(1)
+endef
+terminal-run: ## Abre o OSMarcio Terminal compilado (Linux com sessão gráfica)
+	$(call run_gui,osmarcio-terminal,terminal-build)
+files-build: ## Compila o OSMarcio Files (release)
+	@$(IN_BUILDER) cargo build --release -p osmarcio-files --locked
+files-test: ## Testes do OSMarcio Files (operações reais em diretórios temporários)
+	@$(IN_BUILDER) cargo test -p osmarcio-files --locked
+files-run: ## Abre o OSMarcio Files compilado (Linux com sessão gráfica)
+	$(call run_gui,osmarcio-files,files-build)
+files-package: ## Gera out/debs/osmarcio-files_<versão>_<arch>.deb (não sobrescreve)
+	@$(IN_BUILDER) scripts/build/deb.sh osmarcio-files
+minesweeper-build: ## Compila o Campo Minado (release)
+	@$(IN_BUILDER) cargo build --release -p osmarcio-minesweeper --locked
+minesweeper-test: ## Testes das regras do Campo Minado (sem sessão gráfica)
+	@$(IN_BUILDER) cargo test -p osmarcio-minesweeper --locked
+minesweeper-run: ## Abre o Campo Minado compilado (Linux com sessão gráfica)
+	$(call run_gui,osmarcio-minesweeper,minesweeper-build)
+minesweeper-package: ## Gera out/debs/osmarcio-minesweeper_<versão>_<arch>.deb (não sobrescreve)
+	@$(IN_BUILDER) scripts/build/deb.sh osmarcio-minesweeper
+desktop-build: ## Todos os pacotes do desktop (.deb dos 5 apps) para a arquitetura do host
+	@for d in terminal-deb:osmarcio-terminal info-deb:osmarcio-info browser-package:osmarcio-browser files-package:osmarcio-files minesweeper-package:osmarcio-minesweeper; do \
+	  f=out/debs/$${d#*:}_$(VERSION)_$(BROWSER_ARCH).deb; if [ -f $$f ]; then echo "usando $$f (já existe)"; else $(MAKE) --no-print-directory $${d%%:*} || exit 1; fi; done
+desktop-test: test-desktop test-desktop-apps ## Desktop completo na VM: login, XFCE, Terminal, Browser, Files, Campo Minado
 settings-build: ## [planejado] OSMarcio Settings — Fase 13
 	@$(NOT_YET) $@ "Fase 13"
 software-center-build: ## [planejado] OSMarcio Software Center — Fase 11
@@ -127,8 +157,7 @@ rootfs-arm64: ## Gera somente o rootfs ARM64 (out/rootfs-arm64-<perfil>.tar)
 rootfs-x86_64: ## Gera somente o rootfs x86_64 (emulado no Mac; nativo no WSL2)
 	@$(IN_BUILDER) scripts/build/rootfs.sh amd64 $(PROFILE) out/rootfs-amd64-$(PROFILE).tar
 image-utm: ## Gera a IMG ARM64 UEFI para UTM (PROFILE=desktop padrão; minimal = só console)
-	@if [ "$(PROFILE)" != minimal ]; then for d in terminal-deb:osmarcio-terminal info-deb:osmarcio-info browser-package:osmarcio-browser; do \
-	  f=out/debs/$${d#*:}_$(VERSION)_$(BROWSER_ARCH).deb; if [ -f $$f ]; then echo "usando $$f (já existe)"; else $(MAKE) --no-print-directory $${d%%:*} || exit 1; fi; done; fi
+	@if [ "$(PROFILE)" != minimal ]; then $(MAKE) --no-print-directory desktop-build || exit 1; fi
 	@scripts/image/build-disk-image.sh arm64 $(PROFILE) utm
 build-arm64: image-utm ## Alias: imagem ARM64 completa
 image-minimal: ## Imagem UTM do perfil minimal
@@ -166,6 +195,9 @@ test-utm: ## Boot real da IMG ARM64 (QEMU/HVF, UEFI, 2 boots, autoteste interno)
 	@test -n "$(UTM_IMG)" || { echo "imagem não encontrada; rode 'make image-utm'"; exit 1; }
 	@scripts/test/test-boot-qemu-arm64.sh "$(UTM_IMG)"
 test-boot: test-utm ## Alias: firmware → GRUB → kernel → systemd → login (+ LightDM no desktop)
+test-desktop-apps: ## Terminal (abas), Browser (maximizar), Files e Campo Minado na VM (QEMU/HVF)
+	@test -n "$(UTM_IMG)" || { echo "imagem não encontrada; rode 'make image-utm'"; exit 1; }
+	@scripts/test/test-desktop-apps-qemu.sh "$(UTM_IMG)"
 test-desktop: ## Login gráfico real + XFCE + Terminal + Browser (QEMU/HVF, captura de tela)
 	@test -n "$(UTM_IMG)" || { echo "imagem não encontrada; rode 'make image-utm'"; exit 1; }
 	@scripts/test/test-desktop-qemu-arm64.sh "$(UTM_IMG)"
@@ -185,8 +217,8 @@ diagrams: ## Valida os .drawio e exporta PNG (requer draw.io desktop)
 	@scripts/release/diagrams.sh
 
 ## ---------------------------------------------------------------- Releases
-release: ## [planejado] — Fase 18
-	@$(NOT_YET) $@ "Fase 18" "nenhuma release estável sem ISO/IMG validadas"
+release: ## [planejado] Release estável — Fase 18 (bloqueada: falta x86_64/VirtualBox e ROCK Pi validados)
+	@$(NOT_YET) $@ "Fase 18" "nenhuma release estável sem ISO x86_64 e IMG validadas; artefatos de teste: make verify-images"
 release-verify: verify-images ## Verifica checksums dos artefatos
 
 clean: ## Remove artefatos de compilação/teste (NUNCA apaga out/vm nem images/)

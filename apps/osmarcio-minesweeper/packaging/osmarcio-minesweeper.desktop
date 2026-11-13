@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Campo Minado
+GenericName=Jogo de lógica
+Comment=Encontre as minas sem detoná-las (OSMarcio Minesweeper)
+Exec=osmarcio-minesweeper
+Icon=osmarcio-minesweeper
+Terminal=false
+Categories=Game;LogicGame;GTK;
+Keywords=minesweeper;minas;jogo;game;
+StartupNotify=true

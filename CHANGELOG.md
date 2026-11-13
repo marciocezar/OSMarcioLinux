@@ -4,6 +4,26 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/);
 versões em [SemVer](https://semver.org/lang/pt-BR/). A versão é da
 distribuição, não do kernel.
 
+## [0.3.0] — não lançada (evolução do desktop)
+
+### Adicionado
+- **OSMarcio Files** (`osmarcio-files`, Rust + GTK4 + GIO): navegação (voltar/avançar/acima, caminho editável, trilha, barra lateral XDG/lixeira/favoritos/volumes), lista detalhada e ícones, ordenação, ocultos (Ctrl+H), criar, copiar, mover, renomear, lixeira com restauração, exclusão permanente com confirmação, propriedades, busca (recursiva opcional), operações longas com progresso e cancelamento, abertura por associação MIME. Não roda como root, nunca sobrescreve, não segue links em recursão, não executa scripts.
+- **Campo Minado** (`osmarcio-minesweeper`, Rust + GTK4): Fácil/Intermediário/Difícil/Personalizado, primeiro clique seguro (área 3×3), flood fill iterativo, bandeiras, chord, temporizador, vitória/derrota, recordes em `~/.config/osmarcio`, navegação por teclado; regras numa biblioteca com 18 testes.
+- Ícones próprios para Terminal, Files e Campo Minado (família visual com o do Browser); `scripts/build/app-icons.sh`.
+- `mimeapps.list` (pastas → Files, http(s) → Browser, texto → Mousepad), helper FileManager do XFCE, lançador do Files no painel, ícones nos menus; pacotes `xdg-user-dirs`, `mousepad`, `ristretto`, `desktop-file-utils`.
+- Alvos `terminal-run`, `files-*`, `minesweeper-*`, `desktop-build`, `desktop-test`, `test-desktop-apps`; testes gráficos `scripts/test/test-desktop-apps*.sh`.
+- Diagramas draw.io 08–12 (desktop, Browser, Files, Campo Minado, build) com PNG.
+
+### Corrigido
+- **Terminal:** abas com largura mínima (~18 caracteres), padding 14 px, aba ativa em negrito, tooltip com o título completo; regras de fechamento preservadas.
+- **Browser:** maximizar/redimensionar — o cef-rs retornava 0 em `can_resize/can_maximize` e o CEF fixava mínimo = máximo = 1100×760; agora maximiza na área útil, restaura e redimensiona; F11 independente.
+- `deb.sh`: instala ícones `assets/icons/hicolor` e recusa sobrescrever pacotes.
+
+### Limitações
+- Testado apenas em ARM64 (QEMU/HVF). x86_64/VirtualBox e ROCK Pi 4A: não construídos/sem hardware.
+- `Window::is_maximized()` do CEF retorna falso sob o xfwm4 (só afeta o log).
+- Files sem gvfs/udisks: sem Recentes, sem montar dispositivos; conflitos sempre resolvidos por renomeação automática.
+
 ## [0.2.1] — não lançada (hotfix do OSMarcio Browser)
 
 ### Corrigido

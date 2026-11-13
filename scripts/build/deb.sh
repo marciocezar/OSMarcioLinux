@@ -22,6 +22,12 @@ install -Dm755 "$TARGET/release/$APP" "$STAGE/usr/bin/$APP"
 desktop=$(meta desktop)
 [[ -n $desktop ]] && install -Dm644 "$OSM_ROOT/apps/$APP/$desktop" "$STAGE/usr/share/applications/$(basename "$desktop")"
 install -Dm644 "$OSM_ROOT/LICENSE" "$STAGE/usr/share/doc/$APP/copyright"
+# Ícones próprios (assets/icons/hicolor/<tamanho>/apps/<app>.{png,svg}), se houver.
+for d in "$OSM_ROOT/apps/$APP"/assets/icons/hicolor/*/apps; do
+  [[ -d $d ]] || continue
+  sz=$(basename "$(dirname "$d")")
+  for f in "$d"/"$APP".*; do install -Dm644 "$f" "$STAGE/usr/share/icons/hicolor/$sz/apps/$(basename "$f")"; done
+done
 
 mkdir -p "$STAGE/DEBIAN"
 cat > "$STAGE/DEBIAN/control" <<CTL
@@ -39,6 +45,7 @@ CTL
 
 OUTDIR="$OSM_ROOT/out/debs"; mkdir -p "$OUTDIR"
 DEB="$OUTDIR/${APP}_${OSM_VERSION}_${ARCH}.deb"
+refuse_overwrite "$DEB"
 dpkg-deb --root-owner-group --build "$STAGE" "$DEB" >/dev/null
 log "pacote: ${DEB#$OSM_ROOT/}"
 dpkg-deb --info "$DEB" | sed -n '/Package:/,$p' >&2

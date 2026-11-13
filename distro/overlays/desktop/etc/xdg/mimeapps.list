@@ -1,0 +1,8 @@
+# OSMarcio Linux — aplicativos padrão (FreeDesktop MIME Apps). O usuário pode
+# mudar em ~/.config/mimeapps.list.
+[Default Applications]
+inode/directory=osmarcio-files.desktop
+x-scheme-handler/http=osmarcio-browser.desktop
+x-scheme-handler/https=osmarcio-browser.desktop
+text/html=osmarcio-browser.desktop
+text/plain=org.xfce.mousepad.desktop

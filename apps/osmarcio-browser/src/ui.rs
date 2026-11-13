@@ -108,7 +108,18 @@ wrap_window_delegate! {
 
     impl ViewDelegate {
         fn preferred_size(&self, _view: Option<&mut View>) -> Size {
+            // Tamanho inicial da janela "restaurada".
             Size { width: 1100, height: 760 }
+        }
+
+        fn minimum_size(&self, _view: Option<&mut View>) -> Size {
+            // Sem isto o CEF Views usa o tamanho preferido como mínimo E
+            // máximo (min = max = 1100x760): a janela não redimensiona.
+            Size { width: 520, height: 360 }
+        }
+
+        fn maximum_size(&self, _view: Option<&mut View>) -> Size {
+            Size { width: 0, height: 0 } // 0 = sem limite
         }
     }
 
@@ -142,6 +153,29 @@ wrap_window_delegate! {
             }
             log::info!("osmb: fechar janela solicitado abas={} pode_fechar={ready}", hosts.len());
             ready as i32
+        }
+
+        // O cef-rs devolve 0 por padrão nestes três (no C++ do CEF o padrão é
+        // true): a janela ficava sem "Maximizar" e sem redimensionar.
+        fn can_resize(&self, _window: Option<&mut Window>) -> i32 {
+            1
+        }
+
+        fn can_maximize(&self, _window: Option<&mut Window>) -> i32 {
+            1
+        }
+
+        fn can_minimize(&self, _window: Option<&mut Window>) -> i32 {
+            1
+        }
+
+        fn on_window_bounds_changed(&self, window: Option<&mut Window>, new_bounds: Option<&Rect>) {
+            if let (Some(w), Some(b)) = (window, new_bounds) {
+                log::info!(
+                    "osmb: janela {}x{}+{}+{} maximizada={} tela_cheia={}",
+                    b.width, b.height, b.x, b.y, w.is_maximized(), w.is_fullscreen()
+                );
+            }
         }
 
         fn on_window_destroyed(&self, _window: Option<&mut Window>) {

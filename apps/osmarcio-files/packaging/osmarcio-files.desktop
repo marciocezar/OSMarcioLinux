@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=OSMarcio Files
+GenericName=Gerenciador de arquivos
+Comment=Navegue e organize seus arquivos e pastas
+Exec=osmarcio-files %U
+Icon=osmarcio-files
+Terminal=false
+Categories=System;FileTools;FileManager;GTK;
+MimeType=inode/directory;
+Keywords=arquivos;pastas;files;folder;explorer;
+StartupNotify=true

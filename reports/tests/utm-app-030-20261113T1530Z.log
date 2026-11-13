@@ -1,0 +1,117 @@
+== diagnóstico
+PRETTY_NAME="OSMarcio Linux 0.3.0 (base Debian 13 trixie)"
+aarch64
+running
+active
+osmarcio-browser 0.3.0
+osmarcio-files 0.3.0
+osmarcio-info 0.3.0
+osmarcio-minesweeper 0.3.0
+osmarcio-terminal 0.3.0
+   1280x800      74.99*+
+/dev/vda2        20G  1,6G   18G   9% /
+== ImageMagick temporário (capturas; removido no fim)
+imagemagick ok
+SHOT 00-greeter
+== login gráfico no LightDM (XTest) + troca obrigatória de senha
+PASS login sessão XFCE aberta
+== fase terminal-1
+PASS terminal-1-aba abriu
+PASS terminal-ultima-aba sem botão X
+PASS terminal-ultima-aba Ctrl+Shift+W não fecha a última aba
+RESULTADO(terminal-1): 3 passaram, 0 falharam
+== fase terminal-5
+PASS terminal-5-abas com botões X
+RESULTADO(terminal-5): 1 passaram, 0 falharam
+SHOT 01-terminal-5-abas
+== fase terminal-10
+PASS terminal-10-abas (faixa rola, aba ativa visível)
+RESULTADO(terminal-10): 1 passaram, 0 falharam
+SHOT 02-terminal-10-abas
+== fase terminal-fim
+PASS terminal-fechamento individual 10→1 (em ordem qualquer), X some na última
+PASS terminal-protecao última aba preservada
+PASS terminal-maximizar 1280x763+0+0
+PASS terminal-redimensionar 520x300+0+0
+PASS terminal-fechar janela fechada
+RESULTADO(terminal-fim): 5 passaram, 0 falharam
+== fase browser-max
+PASS browser-https example.com
+PASS browser-acao-maximizar anunciada ao xfwm4
+PASS browser-maximizar 1280x740+0+23 = área útil 1280x763 (painel preservado)
+PASS browser-cef recebeu o novo tamanho: janela 1280x740+0+23
+RESULTADO(browser-max): 4 passaram, 0 falharam
+SHOT 03-browser-maximizado
+== fase browser-fim
+PASS browser-restaurar 1100x760+1+24
+PASS browser-abas nova aba carregou maximizada
+PASS browser-tela-cheia F11 1280x800+0+0
+PASS browser-tela-cheia sair volta a maximizada (independentes)
+PASS browser-fechar encerrado sem órfãos
+PASS browser-reabrir
+X Error of failed request:  BadWindow (invalid Window parameter)
+  Major opcode of failed request:  20 (X_GetProperty)
+  Resource id in failed request:  0x0
+  Serial number of failed request:  26
+  Current serial number in output stream:  26
+RESULTADO(browser-fim): 6 passaram, 0 falharam
+== fase files-a
+PASS files-abrir /home/osmarcio/osmf-teste
+PASS files-listar 5 itens (oculto escondido)
+PASS files-nova-pasta criada
+PASS files-copiar a.txt → Destino (origem preservada)
+PASS files-mover a.txt → Pasta Nova
+PASS files-renomear a.txt → relatorio-final.txt (extensão preservada)
+PASS files-lixeira relatorio-final.txt enviado à lixeira
+PASS files-restaurar da lixeira ao local original
+RESULTADO(files-a): 8 passaram, 0 falharam
+SHOT 04-files
+== fase files-cancelar
+PASS files-cancelar cópia de 2 GiB cancelada
+PASS files-cancelar sem arquivo parcial no destino
+RESULTADO(files-cancelar): 2 passaram, 0 falharam
+== fase files-copia-inicio
+RESULTADO(files-copia-inicio): 0 passaram, 0 falharam
+SHOT 05-files-progresso
+== fase files-copia-fim
+PASS files-copia-grande concluída
+PASS files-copia-grande tamanho idêntico (2 GiB)
+RESULTADO(files-copia-fim): 2 passaram, 0 falharam
+== fase files-b
+PASS files-permissao /root negada (usuário comum)
+PASS files-propriedades janela aberta
+RESULTADO(files-b): 2 passaram, 0 falharam
+SHOT 06-files-propriedades
+== fase files-icones
+PASS files-busca 'grande' → 1 resultado
+PASS files-ocultos Ctrl+H mostra .oculto (5→6)
+PASS files-abrir nota.txt abriu no editor padrão (mousepad, via MIME)
+PASS files-seguranca script.sh não executado
+RESULTADO(files-icones): 4 passaram, 0 falharam
+SHOT 07-files-icones
+== fase files-fim
+PASS files-excluir-permanente com confirmação (não foi à lixeira)
+PASS files-fechar janela
+RESULTADO(files-fim): 2 passaram, 0 falharam
+== fase minas-vitoria
+PASS minas-primeiro-clique (2,2) seguro com 16 minas em 25 casas
+PASS minas-vitoria área 3×3 livre = vitória (personalizado 5×5/16)
+RESULTADO(minas-vitoria): 2 passaram, 0 falharam
+== fase minas-derrota
+PASS minas-quantidade exatamente 10 minas (Fácil 9×9)
+PASS minas-bandeira marcar (contador 9)
+PASS minas-bandeira desmarcar (contador 10)
+PASS minas-derrota mina em (1,5); temporizador parou em 3 s
+RESULTADO(minas-derrota): 4 passaram, 0 falharam
+SHOT 08-minas-derrota
+== fase minas-recorde
+PASS minas-reiniciar F2 novo jogo
+PASS minas-vitoria Fácil completo pelo teclado
+PASS minas-recorde salvo em ~/.config/osmarcio/minesweeper.toml (best_easy = 4)
+RESULTADO(minas-recorde): 3 passaram, 0 falharam
+SHOT 09-minas-vitoria
+== fase minas-fim
+PASS minas-fechar janela
+RESULTADO(minas-fim): 1 passaram, 0 falharam
+SHOT 10-menu
+DONE

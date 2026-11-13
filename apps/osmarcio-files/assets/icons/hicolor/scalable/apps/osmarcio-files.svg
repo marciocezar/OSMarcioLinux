@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OSMarcio Files — ícone original (pasta + documento), identidade OSMarcio. GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#24496e"/><stop offset="1" stop-color="#1d2b3a"/></linearGradient></defs><rect x="8" y="8" width="240" height="240" rx="56" fill="url(#bg)"/>
+<path d="M40 82 Q40 66 56 66 H104 L122 84 H200 Q216 84 216 100 V188 Q216 204 200 204 H56 Q40 204 40 188 Z" fill="#f59e0b"/>
+<rect x="112" y="52" width="76" height="96" rx="8" fill="#e6fffb" transform="rotate(10 150 100)"/>
+<g stroke="#0f766e" stroke-width="7" stroke-linecap="round" transform="rotate(10 150 100)"><path d="M126 76 H174"/><path d="M126 96 H174"/><path d="M126 116 H160"/></g>
+<path d="M40 112 Q40 98 56 98 H200 Q216 98 216 112 V188 Q216 204 200 204 H56 Q40 204 40 188 Z" fill="#fbbf24"/>
+<path d="M60 172 H196" stroke="#b45309" stroke-width="8" stroke-linecap="round" opacity="0.55"/>
+</svg>

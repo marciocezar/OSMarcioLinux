@@ -152,6 +152,10 @@ wrap_window_delegate! {
             }
         }
 
+        fn can_minimize(&self, _window: Option<&mut Window>) -> i32 {
+            1
+        }
+
         fn can_close(&self, _window: Option<&mut Window>) -> i32 {
             let host = ABOUT.with(|a| a.borrow().as_ref().and_then(|u| u.view.browser()).and_then(|b| b.host()));
             match host {

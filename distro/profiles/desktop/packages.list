@@ -42,6 +42,12 @@ polkitd
 at-spi2-core
 xdg-utils
 
+# pastas do usuário (Documentos, Downloads…) e aplicativos usados pelo
+# OSMarcio Files para abrir arquivos (associações MIME)
+xdg-user-dirs
+mousepad
+ristretto
+
 # integração com UTM/QEMU (resolução dinâmica, clipboard)
 spice-vdagent
 qemu-guest-agent
@@ -73,3 +79,6 @@ xdotool
 
 # utilitário usado pelo autoteste (arquitetura dos binários)
 file
+
+# validação de .desktop (autoteste) e cache do menu
+desktop-file-utils

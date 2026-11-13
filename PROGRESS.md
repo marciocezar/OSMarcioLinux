@@ -1,4 +1,4 @@
-# PROGRESS — OSMarcio Linux 0.2.1
+# PROGRESS — OSMarcio Linux 0.3.0
 
 Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 **Parcial** · **Bloqueado** · **Planejado**. Atualizado em 2026-11-13.
@@ -13,7 +13,7 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 | 6 Desktop | Parcial (XFCE/X11 + LightDM funcionando; sem tema/app "Sobre" próprios) |
 | 7 Terminal Rust | Implementado e testado (dentro do desktop OSMarcio, QEMU e UTM) |
 | 8 Editor | Planejado |
-| 9 File Manager | Planejado |
+| 9 File Manager | Implementado e testado (ARM64) |
 | 10 Browser + CEF | Parcial (ARM64 testado: fechamento, ícone, Sobre, verificação de atualizações; sem canal APT assinado; x86_64 não construído) |
 | 11 Software Center | Planejado |
 | 12 Aplicativos externos | Planejado |
@@ -25,6 +25,16 @@ Estados: **Implementado e testado** · **Implementado sem teste completo** ·
 | 18 Release | Planejado |
 
 ---
+
+## Evolução 0.3.0 (2026-11-13) · Implementado e testado (ARM64)
+- **Terminal (abas maiores):** Implementado e testado — Xvfb 10/10; VM 10/10.
+- **Browser (maximizar):** Implementado e testado — VM 10/10 (cef-rs devolvia 0 em can_resize/can_maximize); regressão do hotfix 0.2.1: 35/35.
+- **OSMarcio Files (novo, Fase 9):** Implementado e testado — 15 unitários; VM 20/20.
+- **Campo Minado (novo):** Implementado e testado — 18 unitários; VM 10/10.
+- **Integração:** ícones próprios dos 4 apps, .desktop, MIME, painel, 5 pacotes .deb; `make test-boot` 0 falhas; `make test-desktop-apps` 51/51.
+- **Evidências:** `reports/OSMarcioLinux_Desktop_Regression_Report.md` e os 5 relatórios da etapa.
+- **App UTM 4.7.5:** testado — 51/51 (`reports/tests/utm-app-030-20261113T1530Z.log`).
+- **Não testado / bloqueado:** x86_64/VirtualBox; ROCK Pi 4A; escala 2×.
 
 ## Hotfix 0.2.1 — OSMarcio Browser (2026-11-13)
 - **Implementado e testado (ARM64, QEMU/HVF, sessão XFCE real):** fechamento da janela (X, Alt+F4, Ctrl+Q, menu, Ctrl+W, com download/carregamento/Sobre abertos, sem órfãos); ícone original na janela/barra/Alt+Tab/menu/pacote; janela Sobre com versões reais; verificação de atualizações (10 cenários); pacote `.deb`.

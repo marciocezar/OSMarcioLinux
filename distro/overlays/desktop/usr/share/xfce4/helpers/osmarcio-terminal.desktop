@@ -5,5 +5,5 @@ Type=X-XFCE-Helper
 X-XFCE-Category=TerminalEmulator
 X-XFCE-Commands=osmarcio-terminal
 X-XFCE-CommandsWithParameter=osmarcio-terminal
-Icon=utilities-terminal
+Icon=osmarcio-terminal
 Name=OSMarcio Terminal
